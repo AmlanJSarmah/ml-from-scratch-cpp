@@ -20,6 +20,7 @@ FetchContent_MakeAvailable(Eigen)
 
 add_library(ml STATIC
     src/linear_regression.cpp
+    src/utils.cpp
 )
 
 target_include_directories(ml

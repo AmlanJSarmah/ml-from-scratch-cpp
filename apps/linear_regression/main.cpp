@@ -18,12 +18,9 @@ int main(int argc, char** argv) {
       }
       std::cout << "\n";
     }
-  } catch (...) {
-    std::cerr << "Error: Reading file" << std::endl;
+  } catch (std::exception& e) {
+    std::cerr << "Error: " << e.what() << "\n";
     return 1;
   }
-
-  ml::LinearRegression model;
-  std::cout << model.calculate_hypothesis() << std::endl;
   return 0;
 }
