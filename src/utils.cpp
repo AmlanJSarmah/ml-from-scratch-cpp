@@ -32,8 +32,11 @@ void Dataset::print_dataset() {
       std::cout << std::fixed << std::setprecision(1);
       std::cout << this->features[i][j] << std::setw(20);
     }
-    std::cout << this->target_str_values.find(this->target.at(i))->second
-              << std::setw(20);
+    if (is_target_str)
+      std::cout << this->target_str_values.find(this->target.at(i))->second
+                << std::setw(20);
+    else
+      std::cout << target.at(i) << std::setw(20);
     std::cout << "\n";
   }
   std::cout.unsetf(std::ios::fixed);
@@ -86,7 +89,7 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
       column_idx++;
       // If target column then push to target vector
       if (column_idx == target_column_idx) {
-        _target.push_back(cell);
+        _target.push_back(clean_number_str(cell));
         continue;
       }
       row.push_back(std::stod(clean_number_str(cell)));
