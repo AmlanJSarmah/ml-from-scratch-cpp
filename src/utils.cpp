@@ -21,7 +21,8 @@ std::string clean_number_str(std::string s) {
   return s;
 }
 
-std::vector<std::vector<double>> load_csv(const std::string &filename) {
+std::vector<std::vector<double>> load_csv(const std::string &filename,
+                                          size_t feature_column) {
   std::ifstream file(filename);
   if (!file) {
     throw std::runtime_error("Failed to open file: " + filename);
@@ -29,14 +30,23 @@ std::vector<std::vector<double>> load_csv(const std::string &filename) {
 
   std::vector<std::vector<double>> data;
   std::string line;
+  size_t line_counter = 0;
   while (std::getline(file, line)) {
+    line_counter++;
+    if (line_counter == 1)
+      continue;
     std::vector<double> row;
     std::stringstream ss(line);
     std::string cell;
+    size_t column = 0;
     while (std::getline(ss, cell, ',')) {
+      column++;
+      if (column == feature_column)
+        continue;
       row.push_back(std::stod(clean_number_str(cell)));
     }
     data.push_back(row);
   }
+  file.close();
   return data;
 }
