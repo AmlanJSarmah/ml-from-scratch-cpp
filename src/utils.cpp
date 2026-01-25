@@ -121,6 +121,10 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
         }
       }
     }
+    for (auto it = target_str_values.cbegin(); it != target_str_values.end();
+         it++) {
+      std::cout << it->first << " : " << it->second << std::endl;
+    }
     return Dataset(features, target, target_str_values);
   }
 }
