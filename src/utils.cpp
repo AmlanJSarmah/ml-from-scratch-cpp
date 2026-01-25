@@ -1,10 +1,47 @@
 #include "utils.hpp"
 #include <fstream>
+#include <iomanip>
+#include <ios>
 #include <iostream>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
 
+// ========== Dataset Class methods ==========
+Dataset::Dataset(std::vector<std::vector<double>> features,
+                 std::vector<double> target) {
+  this->features = features;
+  this->target = target;
+  this->is_target_str = false;
+}
+
+Dataset::Dataset(std::vector<std::vector<double>> features,
+                 std::vector<double> target,
+                 std::map<double, std::string> target_str_values) {
+  this->features = features;
+  this->target = target;
+  this->target_str_values = target_str_values;
+  this->is_target_str = true;
+}
+
+void Dataset::print_dataset() {
+  std::cout << "Dataset is : " << std::endl;
+  for (size_t i = 0; i < this->features.size(); i++) {
+    for (size_t j = 0; j < this->features[i].size(); j++) {
+      std::cout << std::fixed << std::setprecision(1);
+      std::cout << this->features[i][j] << std::setw(20);
+    }
+    std::cout << this->target_str_values.find(this->target.at(i))->second
+              << std::setw(20);
+    std::cout << "\n";
+  }
+  std::cout.unsetf(std::ios::fixed);
+  std::cout << std::setprecision(6);
+  std::cout << "=========== END ==========" << std::endl;
+}
+
+// ========== CSV Utilities ==========
 std::string clean_number_str(std::string s) {
   // Remove surrounding double quotes if present
   if (s.size() >= 2 && s.front() == '"' && s.back() == '"') {
@@ -21,32 +58,66 @@ std::string clean_number_str(std::string s) {
   return s;
 }
 
-std::vector<std::vector<double>> load_csv(const std::string &filename,
-                                          size_t feature_column) {
+Dataset load_csv(const std::string &filename, size_t target_column_idx,
+                 bool is_target_str) {
   std::ifstream file(filename);
   if (!file) {
     throw std::runtime_error("Failed to open file: " + filename);
   }
 
-  std::vector<std::vector<double>> data;
+  std::vector<std::vector<double>> features;
+  std::vector<std::string> _target;
+  std::vector<double> target;
   std::string line;
   size_t line_counter = 0;
+
+  // Extract features and target via traversing the file
   while (std::getline(file, line)) {
     line_counter++;
+    // Ignore the header column
     if (line_counter == 1)
       continue;
     std::vector<double> row;
     std::stringstream ss(line);
     std::string cell;
-    size_t column = 0;
+    size_t column_idx = 0;
+    // Iterating over the columns
     while (std::getline(ss, cell, ',')) {
-      column++;
-      if (column == feature_column)
+      column_idx++;
+      // If target column then push to target vector
+      if (column_idx == target_column_idx) {
+        _target.push_back(cell);
         continue;
+      }
       row.push_back(std::stod(clean_number_str(cell)));
     }
-    data.push_back(row);
+    features.push_back(row);
   }
   file.close();
-  return data;
+
+  // If target is already numerical in dataset push to target directly
+  if (!is_target_str) {
+    for (size_t i = 0; i < _target.size(); i++) {
+      target.push_back(std::stod(_target.at(i)));
+    }
+    return Dataset(features, target);
+  }
+  // If target is string encode it to numerical
+  else {
+    std::set<std::string> unique_target(_target.begin(), _target.end());
+    std::map<double, std::string> target_str_values;
+    int counter = 0;
+    for (auto it = unique_target.cbegin(); it != unique_target.cend(); it++) {
+      target_str_values.insert(std::pair<double, std::string>{counter, *it});
+      counter++;
+    }
+    for (size_t i = 0; i < _target.size(); i++) {
+      for (auto element : target_str_values) {
+        if (element.second == _target.at(i)) {
+          target.push_back(element.first);
+        }
+      }
+    }
+    return Dataset(features, target, target_str_values);
+  }
 }
