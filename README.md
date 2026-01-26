@@ -21,3 +21,7 @@ Here, `../data/iris_dataset.csv` is path to dataset and `5` is the column where 
 The `load_csv()` function parses a CSV file and stores the numberical data while elegantly formatting it to be displayed on the console using `.print_dataset()` function.  
 
 <img width="872" height="597" alt="image" src="https://github.com/user-attachments/assets/3218b0c9-f816-44e0-b9b3-94096ed8715c" />
+
+### Splitting data
+We can now use `test_train_splie()` to split testing and training data.  
+<img width="876" height="243" alt="image" src="https://github.com/user-attachments/assets/92a9f1ee-15dc-48a4-8917-1758ca5bae6f" />
