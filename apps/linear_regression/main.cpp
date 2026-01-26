@@ -26,6 +26,9 @@ int main(int argc, char **argv) {
 
     const auto &Y_train = test.first;
     const auto &Y_test = test.second;
+
+    // Linear Regression
+    ml::LinearRegression LinearRegression(X_train, X_test);
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;
