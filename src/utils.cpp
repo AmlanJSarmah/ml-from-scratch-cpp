@@ -193,9 +193,9 @@ test_train_split(float ratio, const Dataset &d) {
   }
   for (int i = 0; i < rows_test; ++i) {
     for (int j = 0; j < cols; ++j) {
-      test_features(i, j) = d._features(i, j);
+      test_features(i, j) = d._features(rows_train + i, j);
     }
-    test_target(i) = d._target(i);
+    test_target(i) = d._target(rows_train + i);
   }
 
   return {{train_features, train_target}, {test_features, test_target}};

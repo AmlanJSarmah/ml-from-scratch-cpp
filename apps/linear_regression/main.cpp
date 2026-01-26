@@ -30,7 +30,9 @@ int main(int argc, char **argv) {
     const auto &Y_test = test.second;
 
     // Linear Regression
-    ml::LinearRegression LinearRegression(X_train, X_test);
+    ml::LinearRegression LinearRegression(X_train, X_test, Y_train, Y_test);
+    LinearRegression.train_ne();
+    LinearRegression.test();
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;
