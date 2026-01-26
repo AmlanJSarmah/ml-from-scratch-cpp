@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <Eigen/Dense>
 #include <fstream>
 #include <iomanip>
 #include <ios>
@@ -25,7 +26,7 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
   this->is_target_str = true;
 }
 
-void Dataset::print_dataset() {
+void Dataset::print_dataset() const {
   std::cout << "Dataset is : " << std::endl;
   for (size_t i = 0; i < this->features.size(); i++) {
     for (size_t j = 0; j < this->features[i].size(); j++) {
@@ -127,4 +128,40 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
     }
     return Dataset(features, target, target_str_values);
   }
+}
+
+// ============ DATA SPLITTING ============
+
+std::pair<std::pair<Eigen::MatrixXd, Eigen::VectorXd>,
+          std::pair<Eigen::MatrixXd, Eigen::VectorXd>>
+test_train_split(float ratio, const Dataset &d) {
+  if (d.features.empty())
+    throw std::string("Empty Dataset");
+
+  // Setup Eigen
+  int cols = d.features.at(0).size();
+  int rows = d.features.size();
+  int rows_test = static_cast<int>(rows * ratio);
+  int rows_train = rows - rows_test;
+  Eigen::MatrixXd train_features(rows_train, cols);
+  Eigen::MatrixXd test_features(rows_test, cols);
+  Eigen::VectorXd train_target(rows_train);
+  Eigen::VectorXd test_target(rows_train);
+
+  // Shuffling
+  // Allocation
+  for (int i = 0; i < rows_train; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      train_features(i, j) = d.features[i][j];
+    }
+    train_target(i) = d.target[i];
+  }
+  for (int i = 0; i < rows_test; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      test_features(i, j) = d.features[i][j];
+    }
+    test_target(i) = d.target[i];
+  }
+
+  return {{train_features, train_target}, {test_features, test_target}};
 }

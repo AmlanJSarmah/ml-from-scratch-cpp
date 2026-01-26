@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Eigen/Dense>
 #include <map>
 #include <string>
 #include <sys/types.h>
@@ -16,8 +17,12 @@ public:
           std::vector<double> target);
   Dataset(std::vector<std::vector<double>> features, std::vector<double> target,
           std::map<double, std::string> target_str_values);
-  void print_dataset();
+  void print_dataset() const;
 };
 
 Dataset load_csv(const std::string &filepath, size_t target_column_idx,
                  bool is_target_str);
+
+std::pair<std::pair<Eigen::MatrixXd, Eigen::VectorXd>,
+          std::pair<Eigen::MatrixXd, Eigen::VectorXd>>
+test_train_split(float ratio, const Dataset &d);
