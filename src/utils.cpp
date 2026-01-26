@@ -15,6 +15,19 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
   this->features = features;
   this->target = target;
   this->is_target_str = false;
+  // Create a Matrix for efficient calculation later
+  size_t rows = this->features.size();
+  size_t cols = this->features.at(0).size();
+  Eigen::MatrixXd f(rows, cols);
+  Eigen::VectorXd v(rows);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      f(i, j) = this->features[i][j];
+    }
+    v(i) = this->target[i];
+  }
+  this->_features = f;
+  this->_target = v;
 }
 
 Dataset::Dataset(std::vector<std::vector<double>> features,
@@ -24,6 +37,19 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
   this->target = target;
   this->target_str_values = target_str_values;
   this->is_target_str = true;
+  // Create a Matrix for efficient calculation later
+  size_t rows = this->features.size();
+  size_t cols = this->features.at(0).size();
+  Eigen::MatrixXd f(rows, cols);
+  Eigen::VectorXd v(rows);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      f(i, j) = this->features[i][j];
+    }
+    v(i) = this->target[i];
+  }
+  this->_features = f;
+  this->_target = v;
 }
 
 void Dataset::print_dataset() const {
@@ -139,8 +165,8 @@ test_train_split(float ratio, const Dataset &d) {
     throw std::string("Empty Dataset");
 
   // Setup Eigen
-  int cols = d.features.at(0).size();
-  int rows = d.features.size();
+  int cols = d._features.cols();
+  int rows = d._features.rows();
   int rows_test = static_cast<int>(rows * ratio);
   int rows_train = rows - rows_test;
   Eigen::MatrixXd train_features(rows_train, cols);
@@ -148,19 +174,18 @@ test_train_split(float ratio, const Dataset &d) {
   Eigen::VectorXd train_target(rows_train);
   Eigen::VectorXd test_target(rows_train);
 
-  // Shuffling
   // Allocation
   for (int i = 0; i < rows_train; ++i) {
     for (int j = 0; j < cols; ++j) {
-      train_features(i, j) = d.features[i][j];
+      train_features(i, j) = d._features(i, j);
     }
-    train_target(i) = d.target[i];
+    train_target(i) = d._target(i);
   }
   for (int i = 0; i < rows_test; ++i) {
     for (int j = 0; j < cols; ++j) {
-      test_features(i, j) = d.features[i][j];
+      test_features(i, j) = d._features(i, j);
     }
-    test_target(i) = d.target[i];
+    test_target(i) = d._target(i);
   }
 
   return {{train_features, train_target}, {test_features, test_target}};

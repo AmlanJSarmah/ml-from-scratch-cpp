@@ -11,6 +11,8 @@ class Dataset {
   bool is_target_str;
 
 public:
+  Eigen::MatrixXd _features;
+  Eigen::VectorXd _target;
   std::vector<std::vector<double>> features;
   std::vector<double> target;
   Dataset(std::vector<std::vector<double>> features,
