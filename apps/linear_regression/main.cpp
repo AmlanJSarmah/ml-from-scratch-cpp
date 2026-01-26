@@ -13,11 +13,13 @@ int main(int argc, char **argv) {
 
   // Load CSV
   try {
-    const auto &data = (std::string(argv[3]).compare("1") == 0)
-                           ? load_csv(argv[1], std::stoi(argv[2]), true)
-                           : load_csv(argv[1], std::stoi(argv[2]), false);
+    auto data = (std::string(argv[3]).compare("1") == 0)
+                    ? load_csv(argv[1], std::stoi(argv[2]), true)
+                    : load_csv(argv[1], std::stoi(argv[2]), false);
     // View our data
     data.print_dataset();
+    // Standard Scaling
+    data.standard_scalar();
     // Splitting
     const auto &[train, test] = test_train_split(0.2, data);
 

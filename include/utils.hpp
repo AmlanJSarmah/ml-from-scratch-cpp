@@ -13,6 +13,7 @@ class Dataset {
 public:
   Eigen::MatrixXd _features;
   Eigen::VectorXd _target;
+  Eigen::MatrixXd scalaed_features;
   std::vector<std::vector<double>> features;
   std::vector<double> target;
   Dataset(std::vector<std::vector<double>> features,
@@ -20,6 +21,7 @@ public:
   Dataset(std::vector<std::vector<double>> features, std::vector<double> target,
           std::map<double, std::string> target_str_values);
   void print_dataset() const;
+  void standard_scalar();
 };
 
 Dataset load_csv(const std::string &filepath, size_t target_column_idx,

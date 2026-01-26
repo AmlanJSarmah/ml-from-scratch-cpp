@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include "Eigen/src/Core/Matrix.h"
 #include <Eigen/Dense>
 #include <fstream>
 #include <iomanip>
@@ -69,6 +70,15 @@ void Dataset::print_dataset() const {
   std::cout.unsetf(std::ios::fixed);
   std::cout << std::setprecision(6);
   std::cout << "=========== END ==========" << std::endl;
+}
+
+void Dataset::standard_scalar() {
+  Eigen::RowVectorXd mean = this->_features.colwise().mean();
+  Eigen::RowVectorXd std =
+      ((this->_features.rowwise() - mean).array().square().colwise().mean())
+          .sqrt();
+  this->scalaed_features =
+      (this->_features.rowwise() - mean).array().rowwise() / std.array();
 }
 
 // ========== CSV Utilities ==========
