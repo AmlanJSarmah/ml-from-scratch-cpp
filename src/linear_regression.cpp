@@ -4,8 +4,8 @@
 
 namespace ml {
 LinearRegression::LinearRegression(const Eigen::MatrixXd &X_train,
-                                   const Eigen::VectorXd &X_test,
-                                   const Eigen::MatrixXd &Y_train,
+                                   const Eigen::VectorXd &Y_train,
+                                   const Eigen::MatrixXd &X_test,
                                    const Eigen::VectorXd &Y_test,
                                    double learning_rate,
                                    double number_of_epochs) {
@@ -35,28 +35,50 @@ void LinearRegression::train_ne() {
   X_with_bias.rightCols(this->X_train.cols()) = this->X_train;
   // Normal Equation
   this->thetas = (X_with_bias.transpose() * X_with_bias).inverse() *
-                 X_with_bias.transpose() * this->X_test;
+                 X_with_bias.transpose() * this->Y_train;
 }
 
 void LinearRegression::test() {
   std::cout << "========== TEST ==========" << std::endl;
   float accuracy;
   float correct = 0, incorrect = 0;
-  for (auto i = 0; i < Y_train.rows(); i++) {
-    Eigen::VectorXd v = this->Y_train.row(i).transpose();
+  double mse = 0, mae = 0, ss_res = 0, ss_tot = 0;
+
+  double y_mean = Y_test.mean();
+
+  for (auto i = 0; i < X_test.rows(); i++) {
+    Eigen::VectorXd v = this->X_test.row(i).transpose();
     auto predicted_ = calculate_hypothesis(this->thetas, v);
-    auto predicted = static_cast<int>(predicted_);
-    auto actual = static_cast<int>(Y_test(i));
-    if (actual == predicted)
+    auto predicted = (predicted_);
+    auto actual = (Y_test(i));
+
+    double error = actual - predicted;
+
+    double tolerance = 0.5; // Within 0.5 standard deviations
+    if (std::abs(error) < tolerance)
       correct++;
     else
       incorrect++;
-    std::cout << predicted_ << " : " << predicted << " : " << actual
-              << std::endl;
+
+    mse += error * error;
+    mae += std::abs(error);
+    ss_res += error * error;
+    ss_tot += (actual - y_mean) * (actual - y_mean);
   }
-  accuracy = (correct / static_cast<float>(Y_train.rows())) * 100;
+
+  int n = X_test.rows();
+  accuracy = (correct / static_cast<float>(X_test.rows())) * 100;
+  mse /= n;
+  mae /= n;
+  double rmse = std::sqrt(mse);
+  double r2 = 1.0 - (ss_res / ss_tot);
+
   std::cout << "Number of accurate prediction " << correct << " out of "
-            << Y_train.rows() << std::endl;
-  std::cout << "Accuracy is : " << accuracy << " % " << std::endl;
+            << X_test.rows() << std::endl;
+  std::cout << "Accuracy is : " << accuracy << " %" << std::endl;
+  std::cout << "R² Score    : " << r2 << std::endl;
+  std::cout << "RMSE        : " << rmse << std::endl;
+  std::cout << "MAE         : " << mae << std::endl;
+  std::cout << "MSE         : " << mse << std::endl;
 }
 } // namespace ml

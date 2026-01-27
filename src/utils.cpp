@@ -53,11 +53,13 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
   this->_target = v;
 }
 
-void Dataset::print_dataset() const {
-  std::cout << "Dataset is : " << std::endl;
-  for (size_t i = 0; i < this->features.size(); i++) {
+void Dataset::print_dataset(int n_rows) const {
+  n_rows = n_rows == -1 ? this->features.size() : n_rows;
+  std::cout << "========== DATASET " << n_rows << "-rows "
+            << "===========" << std::endl;
+  for (size_t i = 0; i < n_rows; i++) {
     for (size_t j = 0; j < this->features[i].size(); j++) {
-      std::cout << std::fixed << std::setprecision(1);
+      std::cout << std::fixed << std::setprecision(3);
       std::cout << this->features[i][j] << std::setw(20);
     }
     if (is_target_str)
@@ -77,8 +79,11 @@ void Dataset::standard_scalar() {
   Eigen::RowVectorXd std =
       ((this->_features.rowwise() - mean).array().square().colwise().mean())
           .sqrt();
-  this->scalaed_features =
+  this->scaled_features =
       (this->_features.rowwise() - mean).array().rowwise() / std.array();
+  this->scaled_target =
+      (_target.array() - _target.mean()) /
+      std::sqrt((_target.array() - _target.mean()).square().mean());
 }
 
 // ========== CSV Utilities ==========
@@ -187,15 +192,15 @@ test_train_split(float ratio, const Dataset &d) {
   // Allocation
   for (int i = 0; i < rows_train; ++i) {
     for (int j = 0; j < cols; ++j) {
-      train_features(i, j) = d._features(i, j);
+      train_features(i, j) = d.scaled_features(i, j);
     }
-    train_target(i) = d._target(i);
+    train_target(i) = d.scaled_target(i);
   }
   for (int i = 0; i < rows_test; ++i) {
     for (int j = 0; j < cols; ++j) {
-      test_features(i, j) = d._features(rows_train + i, j);
+      test_features(i, j) = d.scaled_features(rows_train + i, j);
     }
-    test_target(i) = d._target(rows_train + i);
+    test_target(i) = d.scaled_target(rows_train + i);
   }
 
   return {{train_features, train_target}, {test_features, test_target}};

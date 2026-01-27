@@ -17,20 +17,20 @@ int main(int argc, char **argv) {
                     ? load_csv(argv[1], std::stoi(argv[2]), true)
                     : load_csv(argv[1], std::stoi(argv[2]), false);
     // View our data
-    data.print_dataset();
+    data.print_dataset(5);
     // Standard Scaling
     data.standard_scalar();
     // Splitting
     const auto &[train, test] = test_train_split(0.2, data);
 
     const auto &X_train = train.first;
-    const auto &X_test = train.second;
+    const auto &Y_train = train.second;
 
-    const auto &Y_train = test.first;
+    const auto &X_test = test.first;
     const auto &Y_test = test.second;
 
     // Linear Regression
-    ml::LinearRegression LinearRegression(X_train, X_test, Y_train, Y_test);
+    ml::LinearRegression LinearRegression(X_train, Y_train, X_test, Y_test);
     LinearRegression.train_ne();
     LinearRegression.test();
   } catch (std::string err) {
