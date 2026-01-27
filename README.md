@@ -12,9 +12,9 @@ make -j
 3. We have now build the project in the `build` directory you will see various executables like `linear_regression`.
 4. To run Linear Regression from `build` folder
 ```
-linear_regression ../data/iris_dataset.csv 5
+linear_regression ../data/california_housing_suffled.csv 9 0
 ```
-Here, `../data/iris_dataset.csv` is path to dataset and `5` is the column where target variable is located.
+Here, `../data/california_housing_suffled.csv` is path to dataset and `9` is the column where target variable is located and `0` clarifies that the target columnn in numerical.
 
 ## Features Implemented and Demonstration
 ### CSV Parser
@@ -25,3 +25,7 @@ The `load_csv()` function parses a CSV file and stores the numberical data while
 ### Splitting data
 We can now use `test_train_splie()` to split testing and training data.  
 <img width="876" height="243" alt="image" src="https://github.com/user-attachments/assets/92a9f1ee-15dc-48a4-8917-1758ca5bae6f" />
+
+### Linear Regression
+We can perform linear regression on a dataset, it uses `normal equation` to calculate the parameters theta.  
+<img width="1877" height="363" alt="image" src="https://github.com/user-attachments/assets/a5d00f45-8176-4a16-936f-8ab84444c828" />
