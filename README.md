@@ -26,6 +26,9 @@ The `load_csv()` function parses a CSV file and stores the numberical data while
 We can now use `test_train_splie()` to split testing and training data.  
 <img width="876" height="243" alt="image" src="https://github.com/user-attachments/assets/92a9f1ee-15dc-48a4-8917-1758ca5bae6f" />
 
+### Scaling Data
+We use Z Score normalization i.e. divide by standard deviation and subtract by mean.  
+
 ### Linear Regression
 We can perform linear regression on a dataset, it uses `normal equation` to calculate the parameters theta.  
-<img width="1877" height="363" alt="image" src="https://github.com/user-attachments/assets/a5d00f45-8176-4a16-936f-8ab84444c828" />
+<img width="1673" height="403" alt="image" src="https://github.com/user-attachments/assets/ec93df97-9099-4d5e-8d5a-385c6c0938c6" />
