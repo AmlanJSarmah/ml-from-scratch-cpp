@@ -33,7 +33,7 @@ We use Z Score normalization i.e. divide by standard deviation and subtract by m
 We can perform linear regression on a dataset, it uses `normal equation` to calculate the parameters theta.  
 <img width="1673" height="403" alt="image" src="https://github.com/user-attachments/assets/ec93df97-9099-4d5e-8d5a-385c6c0938c6" />
 
-## Perofrmace Benchmark
+## Performace Benchmark
 We used linear regression on `housing_dataset`.  
 Results in **scikit-learn**  
 <img width="574" height="195" alt="image" src="https://github.com/user-attachments/assets/96bf24ed-fb87-40ef-8e11-de53654eafd4" />  
