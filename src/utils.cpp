@@ -1,5 +1,6 @@
 #include "utils.hpp"
 #include "Eigen/src/Core/Matrix.h"
+#include "ml/linear_regression.hpp"
 #include <Eigen/Dense>
 #include <fstream>
 #include <iomanip>
@@ -72,18 +73,6 @@ void Dataset::print_dataset(int n_rows) const {
   std::cout.unsetf(std::ios::fixed);
   std::cout << std::setprecision(6);
   std::cout << "=========== END ==========" << std::endl;
-}
-
-void Dataset::standard_scalar() {
-  Eigen::RowVectorXd mean = this->_features.colwise().mean();
-  Eigen::RowVectorXd std =
-      ((this->_features.rowwise() - mean).array().square().colwise().mean())
-          .sqrt();
-  this->scaled_features =
-      (this->_features.rowwise() - mean).array().rowwise() / std.array();
-  this->scaled_target =
-      (_target.array() - _target.mean()) /
-      std::sqrt((_target.array() - _target.mean()).square().mean());
 }
 
 // ========== CSV Utilities ==========
@@ -187,21 +176,47 @@ test_train_split(float ratio, const Dataset &d) {
   Eigen::MatrixXd train_features(rows_train, cols);
   Eigen::MatrixXd test_features(rows_test, cols);
   Eigen::VectorXd train_target(rows_train);
-  Eigen::VectorXd test_target(rows_train);
+  Eigen::VectorXd test_target(rows_test);
 
   // Allocation
   for (int i = 0; i < rows_train; ++i) {
     for (int j = 0; j < cols; ++j) {
-      train_features(i, j) = d.scaled_features(i, j);
+      train_features(i, j) = d._features(i, j);
     }
-    train_target(i) = d.scaled_target(i);
+    train_target(i) = d._target(i);
   }
   for (int i = 0; i < rows_test; ++i) {
     for (int j = 0; j < cols; ++j) {
-      test_features(i, j) = d.scaled_features(rows_train + i, j);
+      test_features(i, j) = d._features(rows_train + i, j);
     }
-    test_target(i) = d.scaled_target(rows_train + i);
+    test_target(i) = d._target(rows_train + i);
   }
 
   return {{train_features, train_target}, {test_features, test_target}};
+}
+
+// ========== SCALING ============
+void standard_scalar(ml::LinearRegression &lr) {
+  // Test
+  Eigen::RowVectorXd mean_X_train = lr.X_train.colwise().mean();
+  Eigen::RowVectorXd std =
+      ((lr.X_train.rowwise() - mean_X_train).array().square().colwise().mean())
+          .sqrt();
+  lr.X_train_scaled =
+      (lr.X_train.rowwise() - mean_X_train).array().rowwise() / std.array();
+  lr.Y_train_scaled =
+      (lr.Y_train.array() - lr.Y_train.mean()) /
+      std::sqrt((lr.Y_train.array() - lr.Y_train.mean()).square().mean());
+  // Training
+  Eigen::RowVectorXd mean_X_test = lr.X_test.colwise().mean();
+  Eigen::RowVectorXd _std =
+      ((lr.X_test.rowwise() - mean_X_test).array().square().colwise().mean())
+          .sqrt();
+  lr.X_test_scaled =
+      (lr.X_test.rowwise() - mean_X_test).array().rowwise() / _std.array();
+  lr.Y_test_scaled =
+      (lr.Y_test.array() - lr.Y_test.mean()) /
+      std::sqrt((lr.Y_test.array() - lr.Y_test.mean()).square().mean());
+  // std::cout << lr.Y_test << std::endl;
+  // std::cout << lr.Y_test_scaled << std::endl;
 }

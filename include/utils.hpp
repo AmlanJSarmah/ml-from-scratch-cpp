@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ml/linear_regression.hpp"
 #include <Eigen/Dense>
 #include <map>
 #include <string>
@@ -22,7 +23,6 @@ public:
   Dataset(std::vector<std::vector<double>> features, std::vector<double> target,
           std::map<double, std::string> target_str_values);
   void print_dataset(int n_rows = -1) const;
-  void standard_scalar();
 };
 
 Dataset load_csv(const std::string &filepath, size_t target_column_idx,
@@ -31,3 +31,5 @@ Dataset load_csv(const std::string &filepath, size_t target_column_idx,
 std::pair<std::pair<Eigen::MatrixXd, Eigen::VectorXd>,
           std::pair<Eigen::MatrixXd, Eigen::VectorXd>>
 test_train_split(float ratio, const Dataset &d);
+
+void standard_scalar(ml::LinearRegression &lr);

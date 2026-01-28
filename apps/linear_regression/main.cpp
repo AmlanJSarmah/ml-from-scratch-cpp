@@ -18,8 +18,6 @@ int main(int argc, char **argv) {
                     : load_csv(argv[1], std::stoi(argv[2]), false);
     // View our data
     data.print_dataset(5);
-    // Standard Scaling
-    data.standard_scalar();
     // Splitting
     const auto &[train, test] = test_train_split(0.2, data);
 
@@ -31,6 +29,9 @@ int main(int argc, char **argv) {
 
     // Linear Regression
     ml::LinearRegression LinearRegression(X_train, Y_train, X_test, Y_test);
+    // Scaling
+    standard_scalar(LinearRegression);
+    // Training and Testing
     LinearRegression.train_ne();
     LinearRegression.test();
   } catch (std::string err) {

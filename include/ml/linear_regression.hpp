@@ -12,6 +12,10 @@ public:
   Eigen::VectorXd Y_train;
   Eigen::MatrixXd X_test;
   Eigen::VectorXd Y_test;
+  Eigen::MatrixXd X_train_scaled;
+  Eigen::VectorXd Y_train_scaled;
+  Eigen::MatrixXd X_test_scaled;
+  Eigen::VectorXd Y_test_scaled;
   double learning_rate;
   double number_of_epochs;
   LinearRegression(const Eigen::MatrixXd &X_train,
