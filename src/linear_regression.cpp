@@ -16,6 +16,10 @@ LinearRegression::LinearRegression(const Eigen::MatrixXd &X_train,
   this->thetas = Eigen::VectorXd::Zero(static_cast<int>(X_train.cols()) + 1);
   this->learning_rate = learning_rate;
   this->number_of_epochs = number_of_epochs;
+  this->X_test_scaled = X_test;
+  this->X_train_scaled = X_train;
+  this->Y_test_scaled = Y_test;
+  this->Y_train_scaled = Y_train;
 }
 
 double LinearRegression::calculate_hypothesis(Eigen::VectorXd thetas,

@@ -207,6 +207,12 @@ void standard_scalar(ml::LinearRegression &lr) {
   lr.Y_train_scaled =
       (lr.Y_train.array() - lr.Y_train.mean()) /
       std::sqrt((lr.Y_train.array() - lr.Y_train.mean()).square().mean());
+  lr.X_train_means = mean_X_train;
+  lr.X_train_stds = std;
+  lr.Y_train_means = lr.Y_train.mean();
+  lr.Y_train_stds =
+      std::sqrt((lr.Y_train.array() - lr.Y_train_means).square().sum() /
+                (lr.Y_train.size() - 1));
   // Training
   Eigen::RowVectorXd mean_X_test = lr.X_test.colwise().mean();
   Eigen::RowVectorXd _std =
