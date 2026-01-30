@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     LinearRegression.test();
     // Predicting in california housing
     std::string ds = argv[1];
-    if (ds.compare("california_housing_shuffled.csv")) {
+    if (ds.find("california_housing_shuffled.csv") != std::string::npos) {
       Eigen::VectorXd x(8);
       // Suburban california
       x << 5.0, 20.0, 5.5, 1.1, 1200, 3.0, 34.2, -118.4;
