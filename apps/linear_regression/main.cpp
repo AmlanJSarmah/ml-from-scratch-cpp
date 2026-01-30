@@ -34,6 +34,23 @@ int main(int argc, char **argv) {
     // Training and Testing
     LinearRegression.train_ne();
     LinearRegression.test();
+    // Predicting in california housing
+    std::string ds = argv[1];
+    if (ds.compare("california_housing_shuffled.csv")) {
+      Eigen::VectorXd x(8);
+      // Suburban california
+      x << 5.0, 20.0, 5.5, 1.1, 1200, 3.0, 34.2, -118.4;
+      // High income bay Area
+      // x << 9.5, 30.0, 6.5, 1.0, 900, 2.5, 37.8, -122.4;
+      // Rural area
+      // x << 2.8, 25.0, 4.8, 1.2, 3500, 3.5, 36.5, -119.5;
+      std::cout << "Sample prediction for : ";
+      for (auto i = 0; i < x.size(); i++) {
+        std::cout << x(i) << " ";
+      }
+      std::cout << " is ";
+      std::cout << LinearRegression.predict(x) << std::endl;
+    }
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;

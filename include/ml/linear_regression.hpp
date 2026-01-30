@@ -28,5 +28,6 @@ public:
                    double learning_rate = 0.01, double number_of_epochs = 1000);
   void train_ne();
   void test();
+  double predict(Eigen::VectorXd data);
 };
 } // namespace ml

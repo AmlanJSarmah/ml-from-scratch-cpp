@@ -87,4 +87,11 @@ void LinearRegression::test() {
   std::cout << "MAE         : " << mae << std::endl;
   std::cout << "MSE         : " << mse << std::endl;
 }
+
+double LinearRegression::predict(Eigen::VectorXd data) {
+  Eigen::VectorXd data_scaled =
+      (data - this->X_train_means).array() / X_train_stds.array();
+  double res = this->calculate_hypothesis(this->thetas, data_scaled);
+  return res * this->Y_train_stds + this->Y_train_means;
+}
 } // namespace ml
