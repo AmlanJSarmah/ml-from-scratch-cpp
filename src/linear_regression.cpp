@@ -18,11 +18,10 @@ LinearRegression::LinearRegression(const Eigen::MatrixXd &X_train,
   this->number_of_epochs = number_of_epochs;
 }
 
-double LinearRegression::calculate_hypothesis(Eigen::VectorXd thetas,
-                                              Eigen::VectorXd row) {
-  double res = thetas(0);
+double LinearRegression::calculate_hypothesis(Eigen::VectorXd row) {
+  double res = this->thetas(0);
   for (auto i = 0; i < row.size(); i++) {
-    res += row(i) * thetas(i + 1);
+    res += row(i) * this->thetas(i + 1);
   }
   return res;
 }
@@ -49,7 +48,7 @@ void LinearRegression::test() {
 
   for (auto i = 0; i < X_test_scaled.rows(); i++) {
     Eigen::VectorXd v = this->X_test_scaled.row(i).transpose();
-    auto predicted = calculate_hypothesis(this->thetas, v);
+    auto predicted = calculate_hypothesis(v);
     auto actual = (Y_test_scaled(i));
 
     double error = actual - predicted;
@@ -87,7 +86,7 @@ void LinearRegression::test() {
 double LinearRegression::predict(Eigen::VectorXd data) {
   Eigen::VectorXd data_scaled =
       (data - this->X_train_means).array() / X_train_stds.array();
-  double res = this->calculate_hypothesis(this->thetas, data_scaled);
+  double res = this->calculate_hypothesis(data_scaled);
   return res * this->Y_train_stds + this->Y_train_means;
 }
 } // namespace ml

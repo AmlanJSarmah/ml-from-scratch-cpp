@@ -4,7 +4,7 @@
 
 namespace ml {
 class LinearRegression {
-  double calculate_hypothesis(Eigen::VectorXd thetas, Eigen::VectorXd row);
+  double calculate_hypothesis(Eigen::VectorXd row);
 
 public:
   Eigen::VectorXd thetas;
