@@ -223,6 +223,6 @@ void standard_scalar(ml::LinearRegression &lr) {
   lr.Y_test_scaled =
       (lr.Y_test.array() - lr.Y_test.mean()) /
       std::sqrt((lr.Y_test.array() - lr.Y_test.mean()).square().mean());
-  // std::cout << lr.Y_test << std::endl;
-  // std::cout << lr.Y_test_scaled << std::endl;
+  // After scaling X_train, X_test, Y_train and Y_test we set is_scaled as true
+  lr.is_scaled = true;
 }

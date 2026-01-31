@@ -8,10 +8,12 @@ class LinearRegression {
 
 public:
   Eigen::VectorXd thetas;
+  // Data Metrics
   Eigen::MatrixXd X_train;
   Eigen::VectorXd Y_train;
   Eigen::MatrixXd X_test;
   Eigen::VectorXd Y_test;
+  // Scaled data metrics
   Eigen::MatrixXd X_train_scaled;
   Eigen::VectorXd Y_train_scaled;
   Eigen::MatrixXd X_test_scaled;
@@ -20,8 +22,10 @@ public:
   Eigen::VectorXd X_train_stds;
   double Y_train_means;
   double Y_train_stds;
+  // Hyper parameters
   double learning_rate;
   double number_of_epochs;
+  bool is_scaled;
   LinearRegression(const Eigen::MatrixXd &X_train,
                    const Eigen::VectorXd &Y_train,
                    const Eigen::MatrixXd &X_test, const Eigen::VectorXd &Y_test,

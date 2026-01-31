@@ -16,6 +16,13 @@ LinearRegression::LinearRegression(const Eigen::MatrixXd &X_train,
   this->thetas = Eigen::VectorXd::Zero(static_cast<int>(X_train.cols()) + 1);
   this->learning_rate = learning_rate;
   this->number_of_epochs = number_of_epochs;
+  // Set up X_train_scaled and Y_train_scaled etc as original X_train and
+  // Y_train etc. We reset it in test_train_split
+  this->is_scaled = false;
+  this->X_train_scaled = X_train;
+  this->Y_train_scaled = Y_train;
+  this->X_test_scaled = X_test;
+  this->Y_test_scaled = Y_test;
 }
 
 double LinearRegression::calculate_hypothesis(Eigen::VectorXd row) {
@@ -84,6 +91,10 @@ void LinearRegression::test() {
 }
 
 double LinearRegression::predict(Eigen::VectorXd data) {
+  // Predict for unscaled data
+  if (!is_scaled)
+    return this->calculate_hypothesis(data);
+  // Predict for scaled data
   Eigen::VectorXd data_scaled =
       (data - this->X_train_means).array() / X_train_stds.array();
   double res = this->calculate_hypothesis(data_scaled);
