@@ -1,6 +1,6 @@
 #include "utils.hpp"
 #include "Eigen/src/Core/Matrix.h"
-#include "ml/linear_regression.hpp"
+#include "ml/model.hpp"
 #include <Eigen/Dense>
 #include <fstream>
 #include <iomanip>
@@ -196,7 +196,7 @@ test_train_split(float ratio, const Dataset &d) {
 }
 
 // ========== SCALING ============
-void standard_scalar(ml::LinearRegression &lr) {
+void standard_scalar(ml::Model &lr) {
   // Test
   Eigen::RowVectorXd mean_X_train = lr.X_train.colwise().mean();
   Eigen::RowVectorXd std =

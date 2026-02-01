@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ml/linear_regression.hpp"
+#include "ml/model.hpp"
 #include <Eigen/Dense>
 #include <map>
 #include <string>
@@ -32,4 +32,4 @@ std::pair<std::pair<Eigen::MatrixXd, Eigen::VectorXd>,
           std::pair<Eigen::MatrixXd, Eigen::VectorXd>>
 test_train_split(float ratio, const Dataset &d);
 
-void standard_scalar(ml::LinearRegression &lr);
+void standard_scalar(ml::Model &lr);
