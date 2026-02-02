@@ -5,12 +5,12 @@
 
 namespace ml {
 class LinearRegression : public Model {
-  double calculate_hypothesis(Eigen::VectorXd row);
-
-public:
   Eigen::VectorXd thetas;
   double learning_rate;
   double number_of_epochs;
+  double calculate_hypothesis(Eigen::VectorXd row);
+
+public:
   LinearRegression(const Eigen::MatrixXd &X_train,
                    const Eigen::VectorXd &Y_train,
                    const Eigen::MatrixXd &X_test, const Eigen::VectorXd &Y_test,
