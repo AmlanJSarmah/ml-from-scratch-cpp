@@ -21,6 +21,7 @@ FetchContent_MakeAvailable(Eigen)
 add_library(ml STATIC
     src/linear_regression.cpp
     src/utils.cpp
+    src/logistic_regression.cpp
 )
 
 target_include_directories(ml
@@ -37,4 +38,6 @@ target_link_libraries(ml
 )
 
 add_executable(linear_regression apps/linear_regression/main.cpp)
+add_executable(logistic_regression apps/logistic_regression/main.cpp)
 target_link_libraries(linear_regression PRIVATE ml)
+target_link_libraries(logistic_regression PRIVATE ml)
