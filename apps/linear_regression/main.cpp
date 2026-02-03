@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     // Scaling
     standard_scalar(LinearRegression);
     // Training and Testing
-    LinearRegression.train_ne();
+    LinearRegression.fit();
     LinearRegression.test();
     // Predicting in california housing
     std::string ds = argv[1];

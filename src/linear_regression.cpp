@@ -6,16 +6,12 @@ namespace ml {
 LinearRegression::LinearRegression(const Eigen::MatrixXd &X_train,
                                    const Eigen::VectorXd &Y_train,
                                    const Eigen::MatrixXd &X_test,
-                                   const Eigen::VectorXd &Y_test,
-                                   double learning_rate,
-                                   double number_of_epochs) {
+                                   const Eigen::VectorXd &Y_test) {
   this->X_test = X_test;
   this->X_train = X_train;
   this->Y_test = Y_test;
   this->Y_train = Y_train;
   this->thetas = Eigen::VectorXd::Zero(static_cast<int>(X_train.cols()) + 1);
-  this->learning_rate = learning_rate;
-  this->number_of_epochs = number_of_epochs;
   // Set up X_train_scaled and Y_train_scaled etc as original X_train and
   // Y_train etc. We reset it in test_train_split
   this->is_scaled = false;
@@ -33,7 +29,7 @@ double LinearRegression::calculate_hypothesis(Eigen::VectorXd row) {
   return res;
 }
 
-void LinearRegression::train_ne() {
+void LinearRegression::fit() {
   // we use normal equation
   // Account for Bias
   Eigen::MatrixXd X_with_bias(this->X_train_scaled.rows(),
