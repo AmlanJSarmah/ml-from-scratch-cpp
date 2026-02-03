@@ -55,11 +55,13 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
 }
 
 void Dataset::print_dataset(int n_rows) const {
+  size_t cols_to_print =
+      this->features[0].size() <= 8 ? this->features[0].size() : 8;
   n_rows = n_rows == -1 ? this->features.size() : n_rows;
   std::cout << "========== DATASET " << n_rows << "-rows "
             << "===========" << std::endl;
   for (size_t i = 0; i < n_rows; i++) {
-    for (size_t j = 0; j < this->features[i].size(); j++) {
+    for (size_t j = 0; j < cols_to_print; j++) {
       std::cout << std::fixed << std::setprecision(3);
       std::cout << this->features[i][j] << std::setw(20);
     }
@@ -72,6 +74,9 @@ void Dataset::print_dataset(int n_rows) const {
   }
   std::cout.unsetf(std::ios::fixed);
   std::cout << std::setprecision(6);
+  if (cols_to_print < this->features[0].size()) {
+    std::cout << "Showing first 8 columns and target" << std::endl;
+  }
   std::cout << "=========== END ==========" << std::endl;
 }
 
