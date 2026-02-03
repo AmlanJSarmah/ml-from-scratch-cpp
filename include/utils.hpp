@@ -14,8 +14,6 @@ class Dataset {
 public:
   Eigen::MatrixXd _features;
   Eigen::VectorXd _target;
-  Eigen::MatrixXd scaled_features;
-  Eigen::VectorXd scaled_target;
   std::vector<std::vector<double>> features;
   std::vector<double> target;
   Dataset(std::vector<std::vector<double>> features,

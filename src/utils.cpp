@@ -56,7 +56,7 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
 
 void Dataset::print_dataset(int n_rows) const {
   size_t cols_to_print =
-      this->features[0].size() <= 8 ? this->features[0].size() : 8;
+      this->features[0].size() > 8 ? 8 : this->features[0].size();
   n_rows = n_rows == -1 ? this->features.size() : n_rows;
   std::cout << "========== DATASET " << n_rows << "-rows "
             << "===========" << std::endl;
