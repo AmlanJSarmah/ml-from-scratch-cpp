@@ -19,6 +19,7 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
   this->target = target;
   this->is_target_str = false;
   this->feature_names = feature_names;
+
   // Create a Matrix for efficient calculation later
   size_t rows = this->features.size();
   size_t cols = this->features.at(0).size();
@@ -30,6 +31,7 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
     }
     v(i) = this->target[i];
   }
+
   this->_features = f;
   this->_target = v;
 }
@@ -43,6 +45,7 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
   this->target_str_values = target_str_values;
   this->is_target_str = true;
   this->feature_names = feature_names;
+
   // Create a Matrix for efficient calculation later
   size_t rows = this->features.size();
   size_t cols = this->features.at(0).size();
@@ -54,6 +57,7 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
     }
     v(i) = this->target[i];
   }
+
   this->_features = f;
   this->_target = v;
 }
@@ -62,13 +66,18 @@ void Dataset::print_dataset(int n_rows) const {
   size_t cols_to_print =
       this->features[0].size() > 8 ? 8 : this->features[0].size();
   n_rows = n_rows == -1 ? this->features.size() : n_rows;
+
   std::cout << "========== DATASET " << n_rows << "-rows "
             << "===========" << std::endl;
   std::cout << std::fixed << std::setprecision(3);
+
+  // Print header
   for (size_t i = 0; i < cols_to_print; i++) {
     std::cout << this->feature_names.at(i) << std::setw(20);
   }
   std::cout << "\n";
+
+  // Print actual data
   for (size_t i = 0; i < n_rows; i++) {
     for (size_t j = 0; j < cols_to_print; j++) {
       std::cout << this->features[i][j] << std::setw(20);
@@ -80,11 +89,13 @@ void Dataset::print_dataset(int n_rows) const {
       std::cout << target.at(i) << std::setw(20);
     std::cout << "\n";
   }
+
   std::cout.unsetf(std::ios::fixed);
   std::cout << std::setprecision(6);
   if (cols_to_print < this->features[0].size()) {
     std::cout << "Showing first 8 columns and target" << std::endl;
   }
+
   std::cout << "=========== END ==========" << std::endl;
 }
 
@@ -122,6 +133,7 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
   // Extract features and target via traversing the file
   while (std::getline(file, line)) {
     line_counter++;
+
     // Ignore the header column
     if (line_counter == 1) {
       std::stringstream titles(line);
@@ -130,10 +142,12 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
         feature_names.push_back(title);
       continue;
     }
+
     std::vector<double> row;
     std::stringstream ss(line);
     std::string cell;
     size_t column_idx = 0;
+
     // Iterating over the columns
     while (std::getline(ss, cell, ',')) {
       column_idx++;
@@ -155,6 +169,7 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
     }
     return Dataset(features, target, feature_names);
   }
+
   // If target is string encode it to numerical
   else {
     std::set<std::string> unique_target(_target.begin(), _target.end());
@@ -170,10 +185,6 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
           target.push_back(element.first);
         }
       }
-    }
-    for (auto it = target_str_values.cbegin(); it != target_str_values.end();
-         it++) {
-      std::cout << it->first << " : " << it->second << std::endl;
     }
     return Dataset(features, target, feature_names, target_str_values);
   }
