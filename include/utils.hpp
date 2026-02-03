@@ -14,11 +14,13 @@ class Dataset {
 public:
   Eigen::MatrixXd _features;
   Eigen::VectorXd _target;
+  std::vector<std::string> feature_names;
   std::vector<std::vector<double>> features;
   std::vector<double> target;
-  Dataset(std::vector<std::vector<double>> features,
-          std::vector<double> target);
   Dataset(std::vector<std::vector<double>> features, std::vector<double> target,
+          std::vector<std::string> feature_names);
+  Dataset(std::vector<std::vector<double>> features, std::vector<double> target,
+          std::vector<std::string> feature_names,
           std::map<double, std::string> target_str_values);
   void print_dataset(int n_rows = -1) const;
 };

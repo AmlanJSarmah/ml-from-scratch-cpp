@@ -13,10 +13,12 @@
 
 // ========== Dataset Class methods ==========
 Dataset::Dataset(std::vector<std::vector<double>> features,
-                 std::vector<double> target) {
+                 std::vector<double> target,
+                 std::vector<std::string> feature_names) {
   this->features = features;
   this->target = target;
   this->is_target_str = false;
+  this->feature_names = feature_names;
   // Create a Matrix for efficient calculation later
   size_t rows = this->features.size();
   size_t cols = this->features.at(0).size();
@@ -34,11 +36,13 @@ Dataset::Dataset(std::vector<std::vector<double>> features,
 
 Dataset::Dataset(std::vector<std::vector<double>> features,
                  std::vector<double> target,
+                 std::vector<std::string> feature_names,
                  std::map<double, std::string> target_str_values) {
   this->features = features;
   this->target = target;
   this->target_str_values = target_str_values;
   this->is_target_str = true;
+  this->feature_names = feature_names;
   // Create a Matrix for efficient calculation later
   size_t rows = this->features.size();
   size_t cols = this->features.at(0).size();
@@ -60,9 +64,13 @@ void Dataset::print_dataset(int n_rows) const {
   n_rows = n_rows == -1 ? this->features.size() : n_rows;
   std::cout << "========== DATASET " << n_rows << "-rows "
             << "===========" << std::endl;
+  std::cout << std::fixed << std::setprecision(3);
+  for (size_t i = 0; i < cols_to_print; i++) {
+    std::cout << this->feature_names.at(i) << std::setw(20);
+  }
+  std::cout << "\n";
   for (size_t i = 0; i < n_rows; i++) {
     for (size_t j = 0; j < cols_to_print; j++) {
-      std::cout << std::fixed << std::setprecision(3);
       std::cout << this->features[i][j] << std::setw(20);
     }
     if (is_target_str)
@@ -107,6 +115,7 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
   std::vector<std::vector<double>> features;
   std::vector<std::string> _target;
   std::vector<double> target;
+  std::vector<std::string> feature_names;
   std::string line;
   size_t line_counter = 0;
 
@@ -114,8 +123,13 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
   while (std::getline(file, line)) {
     line_counter++;
     // Ignore the header column
-    if (line_counter == 1)
+    if (line_counter == 1) {
+      std::stringstream titles(line);
+      std::string title;
+      while (std::getline(titles, title, ','))
+        feature_names.push_back(title);
       continue;
+    }
     std::vector<double> row;
     std::stringstream ss(line);
     std::string cell;
@@ -139,7 +153,7 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
     for (size_t i = 0; i < _target.size(); i++) {
       target.push_back(std::stod(_target.at(i)));
     }
-    return Dataset(features, target);
+    return Dataset(features, target, feature_names);
   }
   // If target is string encode it to numerical
   else {
@@ -161,7 +175,7 @@ Dataset load_csv(const std::string &filename, size_t target_column_idx,
          it++) {
       std::cout << it->first << " : " << it->second << std::endl;
     }
-    return Dataset(features, target, target_str_values);
+    return Dataset(features, target, feature_names, target_str_values);
   }
 }
 
