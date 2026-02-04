@@ -33,6 +33,15 @@ double LogisticRegression::calculate_hypthesis(Eigen::VectorXd data) {
   return static_cast<double>(1.0 / (1.0 + std::exp(-res)));
 }
 
+Eigen::VectorXd LogisticRegression::calculate_all_hypotheses() {
+  int m = this->X_train_scaled.rows();
+  Eigen::VectorXd hypotheses(m);
+  for (int i = 0; i < m; i++) {
+    hypotheses(i) = this->calculate_hypthesis(X_train_scaled.row(i));
+  }
+  return hypotheses;
+}
+
 void LogisticRegression::fit() {
   // Account for Bias
   Eigen::MatrixXd X_with_bias(this->X_train_scaled.rows(),
