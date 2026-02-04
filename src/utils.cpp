@@ -72,9 +72,11 @@ void Dataset::print_dataset(int n_rows) const {
   std::cout << std::fixed << std::setprecision(3);
 
   // Print header
-  for (size_t i = 0; i < cols_to_print; i++) {
+  for (size_t i = 0; i < cols_to_print; i++)
     std::cout << this->feature_names.at(i) << std::setw(20);
-  }
+
+  // Print Target
+  std::cout << "target" << std::setw(20);
   std::cout << "\n";
 
   // Print actual data
