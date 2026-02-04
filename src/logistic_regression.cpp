@@ -42,6 +42,25 @@ Eigen::VectorXd LogisticRegression::calculate_all_hypotheses() {
   return hypotheses;
 }
 
+double LogisticRegression::compute_cost() {
+  int m = X_train_scaled.rows();
+  Eigen::VectorXd hypotheses = this->calculate_all_hypotheses();
+
+  double cost = 0.0;
+  // Small epsilon to prevent log(0)
+  double eps = 1e-15;
+
+  for (int i = 0; i < m; i++) {
+    // Clip hypothesis to avoid log(0) or log(1)
+    double h = std::max(eps, std::min(1.0 - eps, hypotheses(i)));
+    // Binary cross-entropy formula
+    cost += -this->Y_train(i) * std::log(h) -
+            (1 - this->Y_train(i)) * std::log(1 - h);
+  }
+
+  return cost / m;
+}
+
 void LogisticRegression::fit() {
   // Account for Bias
   Eigen::MatrixXd X_with_bias(this->X_train_scaled.rows(),
