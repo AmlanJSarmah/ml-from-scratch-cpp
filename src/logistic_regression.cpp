@@ -32,4 +32,16 @@ double LogisticRegression::calculate_hypthesis(Eigen::VectorXd data) {
   // Pass our parameters through the sigmoid activation function
   return static_cast<double>(1.0 / (1.0 + std::exp(-res)));
 }
+
+void LogisticRegression::fit() {
+  // Account for Bias
+  Eigen::MatrixXd X_with_bias(this->X_train_scaled.rows(),
+                              this->X_train_scaled.cols() + 1);
+  X_with_bias.col(0) = Eigen::VectorXd::Ones(this->X_train_scaled.rows());
+  X_with_bias.rightCols(this->X_train_scaled.cols()) = this->X_train_scaled;
+
+  // Constants
+  int m = this->X_train.rows();
+  int n = this->X_train.cols();
+}
 } // namespace ml
