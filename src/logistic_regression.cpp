@@ -24,7 +24,7 @@ LogisticRegression::LogisticRegression(Eigen::MatrixXd X_train,
   this->Y_test_scaled = Y_test;
 }
 
-double LogisticRegression::calculate_hypthesis(Eigen::VectorXd data) {
+double LogisticRegression::calculate_hypothesis(Eigen::VectorXd data) {
   double res = this->thetas(0);
   for (auto i = 0; i < data.size(); i++) {
     res += data(i) * this->thetas(i + 1);
@@ -37,7 +37,7 @@ Eigen::VectorXd LogisticRegression::calculate_all_hypotheses() {
   int m = this->X_train_scaled.rows();
   Eigen::VectorXd hypotheses(m);
   for (int i = 0; i < m; i++) {
-    hypotheses(i) = this->calculate_hypthesis(X_train_scaled.row(i));
+    hypotheses(i) = this->calculate_hypothesis(X_train_scaled.row(i));
   }
   return hypotheses;
 }

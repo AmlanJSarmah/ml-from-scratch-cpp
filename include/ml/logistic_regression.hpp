@@ -7,7 +7,7 @@ class LogisticRegression : public Model {
   double learning_rate;
   double max_iter;
   Eigen::VectorXd thetas;
-  double calculate_hypthesis(Eigen::VectorXd data);
+  double calculate_hypothesis(Eigen::VectorXd data);
   Eigen::VectorXd calculate_all_hypotheses();
   double compute_cost();
 
