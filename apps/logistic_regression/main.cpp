@@ -31,6 +31,8 @@ int main(int argc, char **argv) {
     ml::LogisticRegression LogisticRegression(X_train, Y_train, X_test, Y_test);
     // Scaling
     standard_scalar(LogisticRegression);
+    // Model Fitting
+    LogisticRegression.fit();
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;

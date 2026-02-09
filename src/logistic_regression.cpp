@@ -1,6 +1,7 @@
 #include "ml/logistic_regression.hpp"
 #include "Eigen/Dense"
 #include <cmath>
+#include <iostream>
 
 namespace ml {
 LogisticRegression::LogisticRegression(Eigen::MatrixXd X_train,
@@ -71,5 +72,35 @@ void LogisticRegression::fit() {
   // Constants
   int m = this->X_train.rows();
   int n = this->X_train.cols();
+  // Hyperparameters
+  double tolerance = 1e-6;
+
+  // Training loop with convergence check
+  double prev_cost = std::numeric_limits<double>::max();
+
+  // for (int iter = 0; iter < this->max_iter; iter++) {
+  while (true) {
+    // Compute predictions
+    Eigen::VectorXd predictions = calculate_all_hypotheses();
+
+    // Compute gradients
+    Eigen::VectorXd errors = predictions - this->Y_train;
+    Eigen::VectorXd gradients = (X_with_bias.transpose() * errors) / m;
+
+    // Update parameters
+    this->thetas -= this->learning_rate * gradients;
+
+    // Compute cost for convergence check
+    double current_cost = compute_cost();
+
+    // Check for convergence
+    if (std::abs(prev_cost - current_cost) < tolerance) {
+      // std::cout << "Converged at iteration " << iter << std::endl;
+      std::cout << "Final cost: " << current_cost << std::endl;
+      break;
+    }
+
+    prev_cost = current_cost;
+  }
 }
 } // namespace ml
