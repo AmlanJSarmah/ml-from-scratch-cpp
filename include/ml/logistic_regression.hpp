@@ -14,7 +14,9 @@ class LogisticRegression : public Model {
 public:
   LogisticRegression(Eigen::MatrixXd X_train, Eigen::VectorXd Y_train,
                      Eigen::MatrixXd X_test, Eigen::VectorXd Y_test,
-                     double learning_rate = 0.01, double max_iter = 1000);
+                     double learning_rate = 0.01, double max_iter = 10000);
   void fit();
+  void test();
+  double predict(Eigen::VectorXd data);
 };
 } // namespace ml

@@ -1,6 +1,7 @@
 #include "ml/logistic_regression.hpp"
 #include "Eigen/Dense"
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 
 namespace ml {
@@ -78,8 +79,7 @@ void LogisticRegression::fit() {
   // Training loop with convergence check
   double prev_cost = std::numeric_limits<double>::max();
 
-  // for (int iter = 0; iter < this->max_iter; iter++) {
-  while (true) {
+  for (int iter = 0; iter < this->max_iter; iter++) {
     // Compute predictions
     Eigen::VectorXd predictions = calculate_all_hypotheses();
 
@@ -95,12 +95,108 @@ void LogisticRegression::fit() {
 
     // Check for convergence
     if (std::abs(prev_cost - current_cost) < tolerance) {
-      // std::cout << "Converged at iteration " << iter << std::endl;
+      std::cout << "Converged at iteration " << iter << std::endl;
       std::cout << "Final cost: " << current_cost << std::endl;
       break;
     }
 
     prev_cost = current_cost;
   }
+}
+
+void LogisticRegression::test() {
+  std::cout << "========== TEST ==========" << std::endl;
+
+  int true_positive = 0, true_negative = 0;
+  int false_positive = 0, false_negative = 0;
+  int correct = 0, incorrect = 0;
+
+  double total_loss = 0.0;
+  // Small epsilon to prevent log(0)
+  double eps = 1e-15;
+
+  for (int i = 0; i < X_test_scaled.rows(); i++) {
+    Eigen::VectorXd v = this->X_test_scaled.row(i).transpose();
+
+    // Get probability prediction (0 to 1)
+    double predicted_prob = this->calculate_hypothesis(v);
+
+    // Get binary prediction (0 or 1)
+    int predicted_class = (predicted_prob >= 0.5) ? 1 : 0;
+
+    // Get actual class
+    int actual_class = static_cast<int>(Y_test(i));
+
+    // Update confusion matrix
+    if (actual_class == 1 && predicted_class == 1)
+      true_positive++;
+    else if (actual_class == 0 && predicted_class == 0)
+      true_negative++;
+    else if (actual_class == 0 && predicted_class == 1)
+      false_positive++;
+    else if (actual_class == 1 && predicted_class == 0)
+      false_negative++;
+
+    // Count correct/incorrect
+    if (predicted_class == actual_class)
+      correct++;
+    else
+      incorrect++;
+
+    // Calculate log loss (binary cross-entropy)
+    // Clip predictions to prevent log(0)
+    double clipped_prob = std::max(eps, std::min(1.0 - eps, predicted_prob));
+    total_loss += -(actual_class * std::log(clipped_prob) +
+                    (1 - actual_class) * std::log(1 - clipped_prob));
+  }
+
+  int n = X_test_scaled.rows();
+
+  // Calculate metrics
+  double accuracy = (static_cast<double>(correct) / n) * 100.0;
+  double log_loss = total_loss / n;
+
+  // Precision, Recall, F1-Score
+  double precision = (true_positive + false_positive > 0)
+                         ? static_cast<double>(true_positive) /
+                               (true_positive + false_positive)
+                         : 0.0;
+
+  double recall = (true_positive + false_negative > 0)
+                      ? static_cast<double>(true_positive) /
+                            (true_positive + false_negative)
+                      : 0.0;
+
+  double f1_score = (precision + recall > 0)
+                        ? 2 * (precision * recall) / (precision + recall)
+                        : 0.0;
+
+  // Print results
+  std::cout << "Number of accurate predictions: " << correct << " out of " << n
+            << std::endl;
+  std::cout << "Accuracy    : " << accuracy << " %" << std::endl;
+  std::cout << "Log Loss    : " << log_loss << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "Confusion Matrix:" << std::endl;
+  std::cout << std::setw(15) << "Predicted Negative | Predicted Positive"
+            << std::endl;
+  std::cout << "Actual Negative" << std::setw(10) << true_negative
+            << std::setw(10) << "|" << std::setw(10) << false_positive
+            << std::endl;
+  std::cout << "Actual Positive" << std::setw(10) << false_negative
+            << std::setw(10) << "|" << std::setw(10) << true_positive
+            << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "Precision   : " << precision << " (" << (precision * 100)
+            << "%)" << std::endl;
+  std::cout << "Recall      : " << recall << " (" << (recall * 100) << "%)"
+            << std::endl;
+  std::cout << "F1-Score    : " << f1_score << std::endl;
+}
+
+double LogisticRegression::predict(Eigen::VectorXd data) {
+  return calculate_hypothesis(data);
 }
 } // namespace ml
