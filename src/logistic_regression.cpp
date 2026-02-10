@@ -5,6 +5,10 @@
 #include <iostream>
 
 namespace ml {
+// NOTE: We have stored the value of Y_train_scaled and Y_test_scaled.
+// These values are not to be used with logistic regression.
+// test_train_scaled() is written in such a way that it scaled X_test, X_train,
+// Y_test and Y_train
 LogisticRegression::LogisticRegression(Eigen::MatrixXd X_train,
                                        Eigen::VectorXd Y_train,
                                        Eigen::MatrixXd X_test,
@@ -84,7 +88,7 @@ void LogisticRegression::fit() {
     Eigen::VectorXd predictions = calculate_all_hypotheses();
 
     // Compute gradients
-    Eigen::VectorXd errors = predictions - this->Y_train;
+    Eigen::VectorXd errors = predictions - this->Y_train_scaled;
     Eigen::VectorXd gradients = (X_with_bias.transpose() * errors) / m;
 
     // Update parameters
@@ -125,7 +129,7 @@ void LogisticRegression::test() {
     int predicted_class = (predicted_prob >= 0.5) ? 1 : 0;
 
     // Get actual class
-    int actual_class = static_cast<int>(Y_test(i));
+    int actual_class = static_cast<int>(this->Y_test(i));
 
     // Update confusion matrix
     if (actual_class == 1 && predicted_class == 1)
