@@ -33,11 +33,26 @@ We use Z Score normalization i.e. divide by standard deviation and subtract by m
 We can perform linear regression on a dataset, it uses `normal equation` to calculate the parameters theta.  
 <img width="1673" height="403" alt="image" src="https://github.com/user-attachments/assets/ec93df97-9099-4d5e-8d5a-385c6c0938c6" />
 
+### Logistic Regression
+We can perform logistic regression on a dataset, it uses `gradient ascent` and `sigmoid function` to find the parameters
+<img width="1720" height="562" alt="image" src="https://github.com/user-attachments/assets/77a3690a-ac1e-452c-9f31-07d319ab2792" />
+
+
 ## Performace Benchmark
+
+### Linear Regression
 We used linear regression on `housing_dataset`.  
 Results in **scikit-learn**  
 <img width="574" height="195" alt="image" src="https://github.com/user-attachments/assets/96bf24ed-fb87-40ef-8e11-de53654eafd4" />  
 Result in our **custom library**  
-<img width="681" height="248" alt="image" src="https://github.com/user-attachments/assets/9abd96f5-2c0d-4896-891d-7455e2d98095" />
+<img width="681" height="248" alt="image" src="https://github.com/user-attachments/assets/9abd96f5-2c0d-4896-891d-7455e2d98095" />  
+
+### Logistic Regression
+We used logistic regression on `breast cancer` dataset  
+Results in **scikit-learn**  
+<img width="235" height="196" alt="image" src="https://github.com/user-attachments/assets/8fd6f67f-d5a3-4261-8897-51a3e7c04676" />  
+Results in **custom library**  
+<img width="1720" height="562" alt="image" src="https://github.com/user-attachments/assets/df0bb275-814b-4244-b982-85610cad50dd" />  
+
 
 
