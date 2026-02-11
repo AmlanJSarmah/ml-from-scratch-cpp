@@ -49,7 +49,7 @@ Eigen::VectorXd LogisticRegression::calculate_all_hypotheses() {
 }
 
 double LogisticRegression::compute_cost() {
-  int m = X_train_scaled.rows();
+  int m = this->X_train_scaled.rows();
   Eigen::VectorXd hypotheses = this->calculate_all_hypotheses();
 
   double cost = 0.0;
@@ -85,7 +85,7 @@ void LogisticRegression::fit() {
 
   for (int iter = 0; iter < this->max_iter; iter++) {
     // Compute predictions
-    Eigen::VectorXd predictions = calculate_all_hypotheses();
+    Eigen::VectorXd predictions = this->calculate_all_hypotheses();
 
     // Compute gradients
     Eigen::VectorXd errors = predictions - this->Y_train_scaled;
@@ -95,7 +95,7 @@ void LogisticRegression::fit() {
     this->thetas -= this->learning_rate * gradients;
 
     // Compute cost for convergence check
-    double current_cost = compute_cost();
+    double current_cost = this->compute_cost();
 
     // Check for convergence
     if (std::abs(prev_cost - current_cost) < tolerance) {
@@ -201,6 +201,6 @@ void LogisticRegression::test() {
 }
 
 double LogisticRegression::predict(Eigen::VectorXd data) {
-  return calculate_hypothesis(data);
+  return this->calculate_hypothesis(data);
 }
 } // namespace ml
