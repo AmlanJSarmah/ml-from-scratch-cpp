@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
     // Model training and testing
     ml::NaiveBayes NaiveBayes(X_train, Y_train, X_test, Y_test);
     NaiveBayes.fit();
+    NaiveBayes.test();
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;

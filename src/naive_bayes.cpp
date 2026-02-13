@@ -73,4 +73,71 @@ void NaiveBayes::fit() {
   this->priors = class_counts / m;
 }
 
+int NaiveBayes::predict(const Eigen::VectorXd &data) {
+  // Log probabilities to stop numerical underflow
+  double best_log_prob = -std::numeric_limits<double>::infinity();
+  int best_class = -1;
+  // Assume binary classification
+  int n_classes = 2;
+  int n_features = this->X_test_scaled.cols();
+
+  for (int c = 0; c < n_classes; ++c) {
+    double log_prob = std::log(this->priors(c));
+
+    for (int j = 0; j < n_features; ++j) {
+      double mu = this->means(c, j);
+      double var = this->variances(c, j);
+
+      double diff = data(j) - mu;
+
+      log_prob +=
+          -0.5 * std::log(2.0 * M_PI * var) - (diff * diff) / (2.0 * var);
+    }
+
+    if (log_prob > best_log_prob) {
+      best_log_prob = log_prob;
+      best_class = c;
+    }
+  }
+
+  return best_class;
+}
+
+void NaiveBayes::test() {
+
+  int m = this->X_test_scaled.rows();
+  int TP = 0, TN = 0, FP = 0, FN = 0;
+
+  for (int i = 0; i < m; ++i) {
+    const Eigen::VectorXd x = X_test_scaled.row(i);
+    int best_class = this->predict(x);
+    int true_label = static_cast<int>(this->Y_test(i));
+
+    if (best_class == 1 && true_label == 1)
+      TP++;
+    else if (best_class == 0 && true_label == 0)
+      TN++;
+    else if (best_class == 1 && true_label == 0)
+      FP++;
+    else if (best_class == 0 && true_label == 1)
+      FN++;
+  }
+
+  double accuracy = static_cast<double>(TP + TN) / m;
+  double precision = TP + FP == 0 ? 0.0 : static_cast<double>(TP) / (TP + FP);
+  double recall = TP + FN == 0 ? 0.0 : static_cast<double>(TP) / (TP + FN);
+  double f1 = (precision + recall == 0)
+                  ? 0.0
+                  : 2.0 * precision * recall / (precision + recall);
+
+  std::cout << "\nConfusion Matrix:\n";
+  std::cout << "TP: " << TP << "  FP: " << FP << "\n";
+  std::cout << "FN: " << FN << "  TN: " << TN << "\n\n";
+
+  std::cout << "Accuracy : " << accuracy << "\n";
+  std::cout << "Precision: " << precision << "\n";
+  std::cout << "Recall   : " << recall << "\n";
+  std::cout << "F1 Score : " << f1 << "\n\n";
+}
+
 }; // namespace ml

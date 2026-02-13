@@ -23,5 +23,7 @@ public:
   NaiveBayes(Eigen::MatrixXd X_train, Eigen::VectorXd Y_train,
              Eigen::MatrixXd X_test, Eigen::VectorXd Y_test);
   void fit();
+  int predict(const Eigen::VectorXd &data);
+  void test();
 };
 } // namespace ml
