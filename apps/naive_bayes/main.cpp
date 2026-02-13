@@ -27,6 +27,8 @@ int main(int argc, char **argv) {
     const auto &X_test = test.first;
     const auto &Y_test = test.second;
 
+    // Model training and testing
+    ml::NaiveBayes NaiveBayes(X_train, Y_train, X_test, Y_test);
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;
