@@ -20,7 +20,7 @@ Here, `../data/california_housing_suffled.csv` is path to dataset and `9` is the
 ### CSV Parser
 The `load_csv()` function parses a CSV file and stores the numberical data while elegantly formatting it to be displayed on the console using `.print_dataset()` function.  
 
-<img width="872" height="597" alt="image" src="https://github.com/user-attachments/assets/3218b0c9-f816-44e0-b9b3-94096ed8715c" />
+<img width="1753" height="229" alt="image" src="https://github.com/user-attachments/assets/8b8d4f07-80e2-4755-b21b-ec825bcbacd6" />  
 
 ### Splitting data
 We can now use `test_train_splie()` to split testing and training data.  
@@ -36,6 +36,9 @@ We can perform linear regression on a dataset, it uses `normal equation` to calc
 ### Logistic Regression
 We can perform logistic regression on a dataset, it uses `gradient ascent` and `sigmoid function` to find the parameters
 <img width="1720" height="562" alt="image" src="https://github.com/user-attachments/assets/77a3690a-ac1e-452c-9f31-07d319ab2792" />
+
+### Naive Bayes
+We have also impleamented `Gaussian Naive Bayes` used for classification.  
 
 
 ## Performace Benchmark
@@ -53,6 +56,14 @@ Results in **scikit-learn**
 <img width="235" height="196" alt="image" src="https://github.com/user-attachments/assets/8fd6f67f-d5a3-4261-8897-51a3e7c04676" />  
 Results in **custom library**  
 <img width="1720" height="562" alt="image" src="https://github.com/user-attachments/assets/df0bb275-814b-4244-b982-85610cad50dd" />  
+
+## Naive Bayes
+We use naive bayes on `breast cancer` dataset  
+<img width="238" height="224" alt="image" src="https://github.com/user-attachments/assets/3c01446d-b0e4-47e4-a0ba-79c26a8b206d" />  
+Comparing it to performance in sklearn.  
+<img width="386" height="186" alt="image" src="https://github.com/user-attachments/assets/48eca82e-9091-4f82-ba3d-e813c77d375d" />  
+
+
 
 
 
