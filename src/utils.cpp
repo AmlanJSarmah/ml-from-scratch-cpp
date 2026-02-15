@@ -2,10 +2,13 @@
 #include "Eigen/src/Core/Matrix.h"
 #include "ml/model.hpp"
 #include <Eigen/Dense>
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <ios>
 #include <iostream>
+#include <numeric>
+#include <random>
 #include <set>
 #include <sstream>
 #include <string>
@@ -210,18 +213,34 @@ test_train_split(float ratio, const Dataset &d) {
   Eigen::VectorXd train_target(rows_train);
   Eigen::VectorXd test_target(rows_test);
 
+  // Shuffle data
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  std::vector<int> indices(rows);
+  std::iota(indices.begin(), indices.end(), 0);
+  std::shuffle(indices.begin(), indices.end(), gen);
+
+  Eigen::MatrixXd X_shuffled = d._features;
+  Eigen::VectorXd y_shuffled = d._target;
+
+  for (int i = 0; i < rows; ++i) {
+    X_shuffled.row(i) = d._features.row(indices[i]);
+    y_shuffled(i) = d._target(indices[i]);
+  }
+
   // Allocation
   for (int i = 0; i < rows_train; ++i) {
     for (int j = 0; j < cols; ++j) {
-      train_features(i, j) = d._features(i, j);
+      train_features(i, j) = X_shuffled(i, j);
     }
-    train_target(i) = d._target(i);
+    train_target(i) = y_shuffled(i);
   }
   for (int i = 0; i < rows_test; ++i) {
     for (int j = 0; j < cols; ++j) {
-      test_features(i, j) = d._features(rows_train + i, j);
+      test_features(i, j) = X_shuffled(rows_train + i, j);
     }
-    test_target(i) = d._target(rows_train + i);
+    test_target(i) = y_shuffled(rows_train + i);
   }
 
   return {{train_features, train_target}, {test_features, test_target}};
