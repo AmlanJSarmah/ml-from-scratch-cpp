@@ -12,9 +12,10 @@ make -j
 3. We have now build the project in the `build` directory you will see various executables like `linear_regression`.
 4. To run Linear Regression from `build` folder
 ```
-linear_regression ../data/california_housing_suffled.csv 9 0
+./linear_regression ../data/LinearRegression/california_housing.csv 9 0
 ```
-Here, `../data/california_housing_suffled.csv` is path to dataset and `9` is the column where target variable is located and `0` clarifies that the target columnn in numerical.
+Here, `../data/LinearRegression/california_housing.csv` is path to dataset and `9` is the column where target variable is located and `0` clarifies that the target columnn in numerical.  
+See `data` directory to see various demo datasets. 
 
 ## Features Implemented and Demonstration
 ### CSV Parser
