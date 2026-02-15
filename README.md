@@ -25,6 +25,7 @@ The `load_csv()` function parses a CSV file and stores the numberical data while
 
 ### Splitting data
 We can now use `test_train_splie()` to split testing and training data.  
+Before splitting we also randomly shuffle our data.  
 <img width="876" height="243" alt="image" src="https://github.com/user-attachments/assets/92a9f1ee-15dc-48a4-8917-1758ca5bae6f" />
 
 ### Scaling Data
