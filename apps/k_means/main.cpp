@@ -28,6 +28,9 @@ int main(int argc, char **argv) {
     const auto &Y_test = test.second;
 
     // Model training and testing
+    ml::KMeans KMeans(X_train, Y_train, X_test, Y_test, 3, 300);
+    KMeans.fit();
+    KMeans.test();
   } catch (std::string err) {
     std::cerr << err << std::endl;
     return 1;

@@ -74,6 +74,11 @@ void Dataset::print_dataset(int n_rows) const {
             << "===========" << std::endl;
   std::cout << std::fixed << std::setprecision(3);
 
+  // Map if exist
+  for (const auto &pair : this->target_str_values) {
+    std::cout << pair.first << ": " << pair.second << "\n";
+  }
+
   // Print header
   for (size_t i = 0; i < cols_to_print; i++)
     std::cout << this->feature_names.at(i) << std::setw(20);
