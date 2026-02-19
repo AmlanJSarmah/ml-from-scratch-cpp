@@ -41,6 +41,8 @@ We can perform logistic regression on a dataset, it uses `gradient ascent` and `
 
 ### Naive Bayes
 We have also impleamented `Gaussian Naive Bayes` used for classification.  
+<img width="1501" height="422" alt="image" src="https://github.com/user-attachments/assets/7a7f3945-7011-4a23-9838-667858fe3d22" />
+
 
 
 ## Performace Benchmark
