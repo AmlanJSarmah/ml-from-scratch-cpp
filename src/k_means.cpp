@@ -23,10 +23,11 @@ KMeans::KMeans(Eigen::MatrixXd X_train, Eigen::VectorXd Y_train,
   this->Y_test_scaled = Y_test;
   // Init Centroids
   this->centroids = Eigen::MatrixXd::Zero(k, X_train.cols());
-  this->labels = Eigen::VectorXi::Zero(X_train.rows());
   // Other parameters
   this->k = k;
   this->max_iters = max_iters;
+  this->labels = Eigen::VectorXi::Zero(X_train.rows());
+  this->cluster_to_label = Eigen::VectorXi::Zero(this->k);
 }
 
 void KMeans::fit() {
@@ -86,6 +87,24 @@ void KMeans::fit() {
 
   // Store final labels
   this->labels = labels;
+
+  for (int j = 0; j < k; j++) {
+    std::unordered_map<int, int> label_counts;
+    for (int i = 0; i < n; i++) {
+      if (labels(i) == j) {
+        label_counts[(int)this->Y_train_scaled(i)]++;
+      }
+    }
+    // Find the label with the highest count for this cluster
+    int best_label = 0, best_count = 0;
+    for (auto &[label, count] : label_counts) {
+      if (count > best_count) {
+        best_count = count;
+        best_label = label;
+      }
+    }
+    this->cluster_to_label(j) = best_label;
+  }
 }
 void KMeans::test() {
   int n = this->X_test_scaled.rows();
@@ -104,9 +123,12 @@ void KMeans::test() {
       }
     }
 
-    if (best_cluster == (int)this->Y_test_scaled(i))
+    int predicted_label = this->cluster_to_label(best_cluster);
+
+    if (predicted_label == (int)this->Y_test_scaled(i))
       correct++;
-    std::cout << best_cluster << " : " << this->Y_test_scaled(i) << std::endl;
+    std::cout << predicted_label << " : " << this->Y_test_scaled(i)
+              << std::endl;
   }
 
   double accuracy = (double)correct / n * 100.0;

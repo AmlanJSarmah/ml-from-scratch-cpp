@@ -6,6 +6,7 @@ namespace ml {
 class KMeans : public Model {
   Eigen::MatrixXd centroids;
   Eigen::VectorXi labels;
+  Eigen::VectorXi cluster_to_label;
   int k;
   int max_iters;
 
