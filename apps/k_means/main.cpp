@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv) {
   if (argc != 5) {
-    std::cerr << "Usage linear_regression <dataset.csv path "
+    std::cerr << "Usage k_means <dataset.csv path "
                  "<target_column_number> <is_target_column_a_string(enter "
                  "1/0)> <number_of_clusters>"
               << std::endl;
