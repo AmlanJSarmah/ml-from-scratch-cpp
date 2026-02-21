@@ -4,9 +4,10 @@
 #include <string>
 
 int main(int argc, char **argv) {
-  if (argc != 4) {
+  if (argc != 5) {
     std::cerr << "Usage linear_regression <dataset.csv path "
-                 "<target_column_number> <is_target_column_a_string(enter 1/0)>"
+                 "<target_column_number> <is_target_column_a_string(enter "
+                 "1/0)> <number_of_clusters>"
               << std::endl;
     return 1;
   }
@@ -28,7 +29,8 @@ int main(int argc, char **argv) {
     const auto &Y_test = test.second;
 
     // Model training and testing
-    ml::KMeans KMeans(X_train, Y_train, X_test, Y_test, 3, 300);
+    ml::KMeans KMeans(X_train, Y_train, X_test, Y_test, std::stoi(argv[4]),
+                      1000);
     KMeans.fit();
     KMeans.test();
   } catch (std::string err) {
