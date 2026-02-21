@@ -106,6 +106,7 @@ void KMeans::fit() {
     this->cluster_to_label(j) = best_label;
   }
 }
+
 void KMeans::test() {
   int n = this->X_test_scaled.rows();
   int correct = 0;
@@ -127,8 +128,6 @@ void KMeans::test() {
 
     if (predicted_label == (int)this->Y_test_scaled(i))
       correct++;
-    std::cout << predicted_label << " : " << this->Y_test_scaled(i)
-              << std::endl;
   }
 
   double accuracy = (double)correct / n * 100.0;
