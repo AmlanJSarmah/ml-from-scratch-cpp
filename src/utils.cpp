@@ -252,33 +252,36 @@ test_train_split(float ratio, const Dataset &d) {
 }
 
 // ========== SCALING ============
-void standard_scalar(ml::Model &lr) {
+void standard_scalar(ml::Model &model) {
   // Test
-  Eigen::RowVectorXd mean_X_train = lr.X_train.colwise().mean();
-  Eigen::RowVectorXd std =
-      ((lr.X_train.rowwise() - mean_X_train).array().square().colwise().mean())
-          .sqrt();
-  lr.X_train_scaled =
-      (lr.X_train.rowwise() - mean_X_train).array().rowwise() / std.array();
-  lr.Y_train_scaled =
-      (lr.Y_train.array() - lr.Y_train.mean()) /
-      std::sqrt((lr.Y_train.array() - lr.Y_train.mean()).square().mean());
-  lr.X_train_means = mean_X_train;
-  lr.X_train_stds = std;
-  lr.Y_train_means = lr.Y_train.mean();
-  lr.Y_train_stds =
-      std::sqrt((lr.Y_train.array() - lr.Y_train_means).square().sum() /
-                (lr.Y_train.size() - 1));
+  Eigen::RowVectorXd mean_X_train = model.X_train.colwise().mean();
+  Eigen::RowVectorXd std = ((model.X_train.rowwise() - mean_X_train)
+                                .array()
+                                .square()
+                                .colwise()
+                                .mean())
+                               .sqrt();
+  model.X_train_scaled =
+      (model.X_train.rowwise() - mean_X_train).array().rowwise() / std.array();
+  model.Y_train_scaled =
+      (model.Y_train.array() - model.Y_train.mean()) /
+      std::sqrt((model.Y_train.array() - model.Y_train.mean()).square().mean());
+  model.X_train_means = mean_X_train;
+  model.X_train_stds = std;
+  model.Y_train_means = model.Y_train.mean();
+  model.Y_train_stds =
+      std::sqrt((model.Y_train.array() - model.Y_train_means).square().sum() /
+                (model.Y_train.size() - 1));
   // Training
-  Eigen::RowVectorXd mean_X_test = lr.X_test.colwise().mean();
+  Eigen::RowVectorXd mean_X_test = model.X_test.colwise().mean();
   Eigen::RowVectorXd _std =
-      ((lr.X_test.rowwise() - mean_X_test).array().square().colwise().mean())
+      ((model.X_test.rowwise() - mean_X_test).array().square().colwise().mean())
           .sqrt();
-  lr.X_test_scaled =
-      (lr.X_test.rowwise() - mean_X_test).array().rowwise() / _std.array();
-  lr.Y_test_scaled =
-      (lr.Y_test.array() - lr.Y_test.mean()) /
-      std::sqrt((lr.Y_test.array() - lr.Y_test.mean()).square().mean());
+  model.X_test_scaled =
+      (model.X_test.rowwise() - mean_X_test).array().rowwise() / _std.array();
+  model.Y_test_scaled =
+      (model.Y_test.array() - model.Y_test.mean()) /
+      std::sqrt((model.Y_test.array() - model.Y_test.mean()).square().mean());
   // After scaling X_train, X_test, Y_train and Y_test we set is_scaled as true
-  lr.is_scaled = true;
+  model.is_scaled = true;
 }
