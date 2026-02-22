@@ -26,7 +26,6 @@ The `load_csv()` function parses a CSV file and stores the numberical data while
 ### Splitting data
 We can now use `test_train_splie()` to split testing and training data.  
 Before splitting we also randomly shuffle our data.  
-<img width="876" height="243" alt="image" src="https://github.com/user-attachments/assets/92a9f1ee-15dc-48a4-8917-1758ca5bae6f" />
 
 ### Scaling Data
 We use Z Score normalization i.e. divide by standard deviation and subtract by mean.  
@@ -43,6 +42,9 @@ We can perform logistic regression on a dataset, it uses `gradient ascent` and `
 We have also impleamented `Gaussian Naive Bayes` used for classification.  
 <img width="1501" height="422" alt="image" src="https://github.com/user-attachments/assets/7a7f3945-7011-4a23-9838-667858fe3d22" />
 
+### K Means Clustering
+We have impleamented K Means Clustering.  
+<img width="992" height="311" alt="image" src="https://github.com/user-attachments/assets/2fb81a55-0808-4ac7-9eef-d4b5b092456d" />
 
 
 ## Performace Benchmark
@@ -66,6 +68,14 @@ We use naive bayes on `breast cancer` dataset
 <img width="238" height="224" alt="image" src="https://github.com/user-attachments/assets/3c01446d-b0e4-47e4-a0ba-79c26a8b206d" />  
 Comparing it to performance in sklearn.  
 <img width="386" height="186" alt="image" src="https://github.com/user-attachments/assets/48eca82e-9091-4f82-ba3d-e813c77d375d" />  
+
+## K Means
+We run K Means on Iris dataset  
+<img width="992" height="311" alt="image" src="https://github.com/user-attachments/assets/58e71016-c39d-49b9-9f01-49f349ac9e59" />  
+Comparing it with sklearn's performance  
+<img width="756" height="503" alt="image" src="https://github.com/user-attachments/assets/94d5a158-21d0-43a6-a385-18e71f9a75f6" />
+
+
 
 
 
