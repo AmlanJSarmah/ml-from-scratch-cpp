@@ -115,9 +115,9 @@ void KMeans::test() {
     // Find nearest centroid
     double best_dist = std::numeric_limits<double>::infinity();
     int best_cluster = 0;
-    for (int j = 0; j < k; j++) {
+    for (int j = 0; j < this->k; j++) {
       double dist =
-          (this->X_test_scaled.row(i) - centroids.row(j)).squaredNorm();
+          (this->X_test_scaled.row(i) - this->centroids.row(j)).squaredNorm();
       if (dist < best_dist) {
         best_dist = dist;
         best_cluster = j;
@@ -132,5 +132,19 @@ void KMeans::test() {
 
   double accuracy = (double)correct / n * 100.0;
   std::cout << "Test Accuracy: " << accuracy << "%" << std::endl;
+}
+
+double KMeans::predict(Eigen::VectorXd data) {
+  double best_dist = std::numeric_limits<double>::infinity();
+  int best_cluster = 0;
+  for (int j = 0; j < this->k; j++) {
+    double dist = (data - this->centroids.row(j)).squaredNorm();
+    if (dist < best_dist) {
+      best_dist = dist;
+      best_cluster = j;
+    }
+  }
+
+  return this->cluster_to_label(best_cluster);
 }
 } // namespace ml
