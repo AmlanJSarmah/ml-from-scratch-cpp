@@ -86,6 +86,46 @@ void LinearRegression::test() {
   std::cout << "MSE         : " << mse << std::endl;
 }
 
+void LinearRegression::test_benchmark() {
+  float accuracy;
+  float correct = 0, incorrect = 0;
+  double mse = 0, mae = 0, ss_res = 0, ss_tot = 0;
+
+  double y_mean = Y_test_scaled.mean();
+
+  for (auto i = 0; i < X_test_scaled.rows(); i++) {
+    Eigen::VectorXd v = this->X_test_scaled.row(i).transpose();
+    auto predicted = calculate_hypothesis(v);
+    auto actual = (Y_test_scaled(i));
+
+    double error = actual - predicted;
+
+    double tolerance = 0.5; // Within 0.5 standard deviations
+    if (std::abs(error) < tolerance)
+      correct++;
+    else
+      incorrect++;
+
+    mse += error * error;
+    mae += std::abs(error);
+    ss_res += error * error;
+    ss_tot += (actual - y_mean) * (actual - y_mean);
+  }
+
+  int n = X_test_scaled.rows();
+  accuracy = (correct / static_cast<float>(X_test_scaled.rows())) * 100;
+  mse /= n;
+  mae /= n;
+  double rmse = std::sqrt(mse);
+  double r2 = 1.0 - (ss_res / ss_tot);
+
+  std::cout << "Accuracy    : " << accuracy << " %" << std::endl;
+  std::cout << "R² Score    : " << r2 << std::endl;
+  std::cout << "RMSE        : " << rmse << std::endl;
+  std::cout << "MAE         : " << mae << std::endl;
+  std::cout << "MSE         : " << mse << std::endl;
+}
+
 double LinearRegression::predict(Eigen::VectorXd data) {
   // Predict for unscaled data
   if (!is_scaled)

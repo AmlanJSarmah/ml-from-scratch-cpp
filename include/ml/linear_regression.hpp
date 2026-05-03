@@ -15,6 +15,7 @@ public:
                    const Eigen::VectorXd &Y_test);
   void fit();
   void test();
+  void test_benchmark();
   double predict(Eigen::VectorXd data);
 };
 } // namespace ml

@@ -4,11 +4,17 @@
 #include <string>
 
 int main(int argc, char **argv) {
-  if (argc != 4) {
-    std::cerr << "Usage linear_regression <dataset.csv path "
-                 "<target_column_number> <is_target_column_a_string(enter 1/0)>"
+  if ((argc != 4) && (argc != 5)) {
+    std::cerr << "Usage linear_regression <dataset.csv path> "
+                 "<target_column_number> <is_target_column_a_string(enter "
+                 "1/0)> <benchmark_mode(optional)>"
               << std::endl;
     return 1;
+  }
+
+  bool benchmark_mode = 0;
+  if (argc == 5) {
+    benchmark_mode = (std::string(argv[4]).compare("1") == 0) ? 1 : 0;
   }
 
   // Load CSV
@@ -17,7 +23,9 @@ int main(int argc, char **argv) {
                     ? load_csv(argv[1], std::stoi(argv[2]), true)
                     : load_csv(argv[1], std::stoi(argv[2]), false);
     // View our data
-    data.print_dataset(5);
+    if (!benchmark_mode)
+      data.print_dataset(5);
+
     // Splitting
     const auto &[train, test] = test_train_split(0.2, data);
 
@@ -29,10 +37,19 @@ int main(int argc, char **argv) {
 
     // Linear Regression
     ml::LinearRegression LinearRegression(X_train, Y_train, X_test, Y_test);
+
     // Scaling
     standard_scalar(LinearRegression);
+
     // Training and Testing
     LinearRegression.fit();
+
+    // Benchmark mode
+    if (benchmark_mode) {
+      LinearRegression.test_benchmark();
+      return 0;
+    }
+
     LinearRegression.test();
     // Predicting in california housing
     std::string ds = argv[1];
