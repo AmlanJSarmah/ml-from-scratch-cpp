@@ -99,8 +99,8 @@ void LogisticRegression::fit() {
 
     // Check for convergence
     if (std::abs(prev_cost - current_cost) < tolerance) {
-      std::cout << "Converged at iteration " << iter << std::endl;
-      std::cout << "Final cost: " << current_cost << std::endl;
+      // std::cout << "Converged at iteration " << iter << std::endl;
+      // std::cout << "Final cost: " << current_cost << std::endl;
       break;
     }
 
@@ -198,6 +198,83 @@ void LogisticRegression::test() {
   std::cout << "Recall      : " << recall << " (" << (recall * 100) << "%)"
             << std::endl;
   std::cout << "F1-Score    : " << f1_score << std::endl;
+}
+
+void LogisticRegression::test_benchmark() {
+
+  int true_positive = 0, true_negative = 0;
+  int false_positive = 0, false_negative = 0;
+  int correct = 0, incorrect = 0;
+
+  double total_loss = 0.0;
+  // Small epsilon to prevent log(0)
+  double eps = 1e-15;
+
+  for (int i = 0; i < X_test_scaled.rows(); i++) {
+    Eigen::VectorXd v = this->X_test_scaled.row(i).transpose();
+
+    // Get probability prediction (0 to 1)
+    double predicted_prob = this->calculate_hypothesis(v);
+
+    // Get binary prediction (0 or 1)
+    int predicted_class = (predicted_prob >= 0.5) ? 1 : 0;
+
+    // Get actual class
+    int actual_class = static_cast<int>(this->Y_test(i));
+
+    // Update confusion matrix
+    if (actual_class == 1 && predicted_class == 1)
+      true_positive++;
+    else if (actual_class == 0 && predicted_class == 0)
+      true_negative++;
+    else if (actual_class == 0 && predicted_class == 1)
+      false_positive++;
+    else if (actual_class == 1 && predicted_class == 0)
+      false_negative++;
+
+    // Count correct/incorrect
+    if (predicted_class == actual_class)
+      correct++;
+    else
+      incorrect++;
+
+    // Calculate log loss (binary cross-entropy)
+    // Clip predictions to prevent log(0)
+    double clipped_prob = std::max(eps, std::min(1.0 - eps, predicted_prob));
+    total_loss += -(actual_class * std::log(clipped_prob) +
+                    (1 - actual_class) * std::log(1 - clipped_prob));
+  }
+
+  int n = X_test_scaled.rows();
+
+  // Calculate metrics
+  double accuracy = (static_cast<double>(correct) / n) * 100.0;
+  double log_loss = total_loss / n;
+
+  // Precision, Recall, F1-Score
+  double precision = (true_positive + false_positive > 0)
+                         ? static_cast<double>(true_positive) /
+                               (true_positive + false_positive)
+                         : 0.0;
+
+  double recall = (true_positive + false_negative > 0)
+                      ? static_cast<double>(true_positive) /
+                            (true_positive + false_negative)
+                      : 0.0;
+
+  double f1_score = (precision + recall > 0)
+                        ? 2 * (precision * recall) / (precision + recall)
+                        : 0.0;
+
+  // Print results
+  std::cout << accuracy << std::endl;
+  std::cout << true_positive << std::endl;
+  std::cout << false_positive << std::endl;
+  std::cout << false_negative << std::endl;
+  std::cout << true_negative << std::endl;
+  std::cout << precision << std::endl;
+  std::cout << recall << std::endl;
+  std::cout << f1_score << std::endl;
 }
 
 double LogisticRegression::predict(Eigen::VectorXd data) {

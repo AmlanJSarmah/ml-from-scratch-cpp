@@ -4,11 +4,17 @@
 #include <string>
 
 int main(int argc, char **argv) {
-  if (argc != 4) {
+  if ((argc != 4) && (argc != 5)) {
     std::cerr << "Usage logistic_regression <dataset.csv path "
-                 "<target_column_number> <is_target_column_a_string(enter 1/0)>"
+                 "<target_column_number> <is_target_column_a_string(enter "
+                 "1/0)> <benchmark_mode(enter 1/0) optional>"
               << std::endl;
     return 1;
+  }
+
+  bool benchmark_mode = 0;
+  if (argc == 5) {
+    benchmark_mode = (std::string(argv[4]).compare("1") == 0) ? 1 : 0;
   }
 
   // Load CSV
@@ -17,7 +23,9 @@ int main(int argc, char **argv) {
                     ? load_csv(argv[1], std::stoi(argv[2]), true)
                     : load_csv(argv[1], std::stoi(argv[2]), false);
     // View our data
-    data.print_dataset(5);
+    if (!benchmark_mode)
+      data.print_dataset(5);
+
     // Splitting
     const auto &[train, test] = test_train_split(0.2, data);
 
@@ -34,6 +42,10 @@ int main(int argc, char **argv) {
     // Model training
     LogisticRegression.fit();
     // Model testing
+    if (benchmark_mode) {
+      LogisticRegression.test_benchmark();
+      return 0;
+    }
     LogisticRegression.test();
   } catch (std::string err) {
     std::cerr << err << std::endl;

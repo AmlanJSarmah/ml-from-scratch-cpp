@@ -119,11 +119,11 @@ void LinearRegression::test_benchmark() {
   double rmse = std::sqrt(mse);
   double r2 = 1.0 - (ss_res / ss_tot);
 
-  std::cout << "Accuracy    : " << accuracy << " %" << std::endl;
-  std::cout << "R² Score    : " << r2 << std::endl;
-  std::cout << "RMSE        : " << rmse << std::endl;
-  std::cout << "MAE         : " << mae << std::endl;
-  std::cout << "MSE         : " << mse << std::endl;
+  std::cout << accuracy << std::endl;
+  std::cout << r2 << std::endl;
+  std::cout << rmse << std::endl;
+  std::cout << mae << std::endl;
+  std::cout << mse << std::endl;
 }
 
 double LinearRegression::predict(Eigen::VectorXd data) {

@@ -134,6 +134,34 @@ void KMeans::test() {
   std::cout << "Test Accuracy: " << accuracy << "%" << std::endl;
 }
 
+void KMeans::test_benchmark() {
+
+  int n = this->X_test_scaled.rows();
+  int correct = 0;
+
+  for (int i = 0; i < n; i++) {
+    // Find nearest centroid
+    double best_dist = std::numeric_limits<double>::infinity();
+    int best_cluster = 0;
+    for (int j = 0; j < this->k; j++) {
+      double dist =
+          (this->X_test_scaled.row(i) - this->centroids.row(j)).squaredNorm();
+      if (dist < best_dist) {
+        best_dist = dist;
+        best_cluster = j;
+      }
+    }
+
+    int predicted_label = this->cluster_to_label(best_cluster);
+
+    if (predicted_label == (int)this->Y_test_scaled(i))
+      correct++;
+  }
+
+  double accuracy = (double)correct / n * 100.0;
+  std::cout << accuracy << std::endl;
+}
+
 double KMeans::predict(Eigen::VectorXd data) {
   double best_dist = std::numeric_limits<double>::infinity();
   int best_cluster = 0;

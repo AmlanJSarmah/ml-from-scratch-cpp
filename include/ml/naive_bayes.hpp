@@ -25,5 +25,6 @@ public:
   void fit();
   int predict(const Eigen::VectorXd &data);
   void test();
+  void test_benchmark();
 };
 } // namespace ml

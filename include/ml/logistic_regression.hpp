@@ -17,6 +17,7 @@ public:
                      double learning_rate = 0.01, double max_iter = 10000);
   void fit();
   void test();
+  void test_benchmark();
   double predict(Eigen::VectorXd data);
 };
 } // namespace ml

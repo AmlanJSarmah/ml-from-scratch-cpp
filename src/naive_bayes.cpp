@@ -140,4 +140,41 @@ void NaiveBayes::test() {
   std::cout << "F1 Score : " << f1 << "\n\n";
 }
 
+void NaiveBayes::test_benchmark() {
+
+  int m = this->X_test_scaled.rows();
+  int TP = 0, TN = 0, FP = 0, FN = 0;
+
+  for (int i = 0; i < m; ++i) {
+    const Eigen::VectorXd x = X_test_scaled.row(i);
+    int best_class = this->predict(x);
+    int true_label = static_cast<int>(this->Y_test(i));
+
+    if (best_class == 1 && true_label == 1)
+      TP++;
+    else if (best_class == 0 && true_label == 0)
+      TN++;
+    else if (best_class == 1 && true_label == 0)
+      FP++;
+    else if (best_class == 0 && true_label == 1)
+      FN++;
+  }
+
+  double accuracy = static_cast<double>(TP + TN) / m;
+  double precision = TP + FP == 0 ? 0.0 : static_cast<double>(TP) / (TP + FP);
+  double recall = TP + FN == 0 ? 0.0 : static_cast<double>(TP) / (TP + FN);
+  double f1 = (precision + recall == 0)
+                  ? 0.0
+                  : 2.0 * precision * recall / (precision + recall);
+
+  std::cout << accuracy << std::endl;
+  std::cout << TP << std::endl;
+  std::cout << FP << std::endl;
+  std::cout << FN << std::endl;
+  std::cout << TN << std::endl;
+  std::cout << precision << std::endl;
+  std::cout << recall << std::endl;
+  std::cout << f1 << std::endl;
+}
+
 }; // namespace ml
