@@ -43,3 +43,7 @@
 build/
 .cache/
 .venv/
+
+# Server
+node_modules/
+.idea/
