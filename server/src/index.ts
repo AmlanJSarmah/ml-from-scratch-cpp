@@ -2,6 +2,7 @@ import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import { treeifyError, ZodError } from 'zod';
 import appRouter from './routes/app.routes.js';
+import { AppError } from './utils/error.js';
 
 const app = express();
 
@@ -17,6 +18,9 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
       message: 'Validation failed',
       errors: treeifyError(error),
     });
+  }
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json({ errors: error.message });
   }
   console.error(error);
   res.status(500).json({ message: 'Internal Server Error' });

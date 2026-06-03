@@ -2,15 +2,15 @@ import { z } from 'zod';
 
 export const benchMarkQuery = z.object({
   model: z.enum([
-    'linear regression',
-    'logistic regression',
-    'naive bayes',
-    'k-means',
+    'linear_regression',
+    'logistic_regression',
+    'naive_bayes',
+    'k_means',
   ]),
   dataset: z.enum([
     'iris',
-    'california housing',
-    'breast cancer',
-    'titanic survived',
+    'california_housing',
+    'breast_cancer',
+    'titanic_survived',
   ]),
 });
