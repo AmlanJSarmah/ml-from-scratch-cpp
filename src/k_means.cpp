@@ -158,7 +158,7 @@ void KMeans::test_benchmark() {
       correct++;
   }
 
-  double accuracy = (double)correct / n * 100.0;
+  double accuracy = (double)correct / n;
   std::cout << accuracy << std::endl;
 }
 

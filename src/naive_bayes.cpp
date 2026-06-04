@@ -123,7 +123,7 @@ void NaiveBayes::test() {
       FN++;
   }
 
-  double accuracy = static_cast<double>(TP + TN) / m;
+  double accuracy = (static_cast<double>(TP + TN) / m) * 100;
   double precision = TP + FP == 0 ? 0.0 : static_cast<double>(TP) / (TP + FP);
   double recall = TP + FN == 0 ? 0.0 : static_cast<double>(TP) / (TP + FN);
   double f1 = (precision + recall == 0)

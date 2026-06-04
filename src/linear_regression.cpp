@@ -113,7 +113,7 @@ void LinearRegression::test_benchmark() {
   }
 
   int n = X_test_scaled.rows();
-  accuracy = (correct / static_cast<float>(X_test_scaled.rows())) * 100;
+  accuracy = (correct / static_cast<float>(X_test_scaled.rows()));
   mse /= n;
   mae /= n;
   double rmse = std::sqrt(mse);

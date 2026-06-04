@@ -248,7 +248,7 @@ void LogisticRegression::test_benchmark() {
   int n = X_test_scaled.rows();
 
   // Calculate metrics
-  double accuracy = (static_cast<double>(correct) / n) * 100.0;
+  double accuracy = (static_cast<double>(correct) / n);
   double log_loss = total_loss / n;
 
   // Precision, Recall, F1-Score
