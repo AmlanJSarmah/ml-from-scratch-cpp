@@ -47,3 +47,6 @@ build/
 # Server
 node_modules/
 .idea/
+
+# Client
+components/ui/
