@@ -1,11 +1,13 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import { treeifyError, ZodError } from 'zod';
+import cors from 'cors';
 import appRouter from './routes/app.routes.js';
 import { AppError } from './utils/error.js';
 
 const app = express();
 
+app.use(cors());
 app.use(appRouter);
 
 app.listen(8080, () => {
