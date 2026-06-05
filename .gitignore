@@ -49,4 +49,4 @@ node_modules/
 .idea/
 
 # Client
-components/ui/
+client/src/components/ui
