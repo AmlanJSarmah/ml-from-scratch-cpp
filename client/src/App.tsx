@@ -35,7 +35,9 @@ export function App() {
   const [model, setModel] = React.useState<string | null>(null)
   const [dataset, setDataset] = React.useState<string | null>(null)
   const [benchmarkData, setBenchmarkData] = React.useState<unknown | null>(null)
-  const [benchmarkError, setBenchmarkError] = React.useState<string | null>(null)
+  const [benchmarkError, setBenchmarkError] = React.useState<string | null>(
+    null
+  )
   const [isRunning, setIsRunning] = React.useState(false)
 
   const isLinearRegression = model === "Linear Regression"
@@ -70,7 +72,7 @@ export function App() {
     const datasetParam = toSnakeCase(dataset)
     try {
       const response = await fetch(
-        `http://localhost:8080/benchmarks?model=${modelParam}&dataset=${datasetParam}`
+        `https://ml-from-scratch-cpp.onrender.com/benchmarks?model=${modelParam}&dataset=${datasetParam}`
       )
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`)
@@ -132,8 +134,9 @@ export function App() {
           sklearn: sklearnValue,
         }
       })
-      .filter((item): item is { metric: string; custom: number; sklearn: number } =>
-        Boolean(item)
+      .filter(
+        (item): item is { metric: string; custom: number; sklearn: number } =>
+          Boolean(item)
       )
   }, [benchmarkData])
 
@@ -157,6 +160,18 @@ export function App() {
           Compare custom made C++ model's performance with sklearn on various
           datasets
         </p>
+        <p className="text-sm text-muted-foreground sm:text-base">
+          For source code of the custom C++ models and setup instructions visit{" "}
+          <a
+            className="font-medium text-foreground underline"
+            href="https://github.com/AmlanJSarmah/ml-from-scratch-cpp"
+            rel="noreferrer"
+            target="_blank"
+          >
+            https://github.com/AmlanJSarmah/ml-from-scratch-cpp
+          </a>
+          .
+        </p>
         <div className="mx-auto grid w-full max-w-xl gap-4 sm:grid-cols-2">
           <div className="space-y-2 text-left">
             <label
@@ -167,6 +182,7 @@ export function App() {
             </label>
             <Combobox
               value={model}
+              disabled={isRunning}
               onValueChange={(value) => {
                 setModel(value)
                 setBenchmarkData(null)
@@ -177,20 +193,23 @@ export function App() {
                 id="model-combobox"
                 placeholder="Select a model"
                 className="w-full"
+                disabled={isRunning}
               />
               <ComboboxContent>
                 <ComboboxList>
-                  {MODEL_OPTIONS.map((option) => (
-                    <ComboboxItem
-                      key={option}
-                      value={option}
-                      disabled={
-                        (isCaliforniaHousing && option !== "Linear Regression") ||
-                        (isIrisSelected &&
-                          (option === "Logistic Regression" ||
-                            option === "Naive Bayes"))
-                      }
-                    >
+                  {MODEL_OPTIONS.filter((option) => {
+                    if (isCaliforniaHousing) {
+                      return option === "Linear Regression"
+                    }
+                    if (isIrisSelected) {
+                      return (
+                        option !== "Logistic Regression" &&
+                        option !== "Naive Bayes"
+                      )
+                    }
+                    return true
+                  }).map((option) => (
+                    <ComboboxItem key={option} value={option}>
                       {option}
                     </ComboboxItem>
                   ))}
@@ -207,6 +226,7 @@ export function App() {
             </label>
             <Combobox
               value={dataset}
+              disabled={isRunning}
               onValueChange={(value) => {
                 setDataset(value)
                 setBenchmarkData(null)
@@ -217,20 +237,20 @@ export function App() {
                 id="dataset-combobox"
                 placeholder="Select a dataset"
                 className="w-full"
+                disabled={isRunning}
               />
               <ComboboxContent>
                 <ComboboxList>
-                  {DATASET_OPTIONS.map((option) => (
-                    <ComboboxItem
-                      key={option}
-                      value={option}
-                      disabled={
-                        (option === "California Housing" &&
-                          !isLinearRegression &&
-                          model !== null) ||
-                        (option === "Iris" && isIrisIncompatibleModel)
-                      }
-                    >
+                  {DATASET_OPTIONS.filter((option) => {
+                    if (option === "California Housing") {
+                      return isLinearRegression || model === null
+                    }
+                    if (option === "Iris") {
+                      return !isIrisIncompatibleModel
+                    }
+                    return true
+                  }).map((option) => (
+                    <ComboboxItem key={option} value={option}>
                       {option}
                     </ComboboxItem>
                   ))}
@@ -253,13 +273,16 @@ export function App() {
               <>
                 {chartDataForMetrics.length > 0 ? (
                   <ChartContainer
-                    className="h-72 w-full aspect-auto"
+                    className="aspect-auto h-72 w-full"
                     config={{
                       custom: { label: "Custom", color: "#3b82f6" },
                       sklearn: { label: "Sklearn", color: "#1d4ed8" },
                     }}
                   >
-                    <BarChart data={chartDataForMetrics} margin={{ left: 8, right: 8 }}>
+                    <BarChart
+                      data={chartDataForMetrics}
+                      margin={{ left: 8, right: 8 }}
+                    >
                       <CartesianGrid vertical={false} />
                       <XAxis
                         dataKey="metric"
@@ -281,20 +304,31 @@ export function App() {
                       />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <ChartLegend content={<ChartLegendContent />} />
-                      <Bar dataKey="custom" fill="var(--color-custom)" radius={4} />
-                      <Bar dataKey="sklearn" fill="var(--color-sklearn)" radius={4} />
+                      <Bar
+                        dataKey="custom"
+                        fill="var(--color-custom)"
+                        radius={4}
+                      />
+                      <Bar
+                        dataKey="sklearn"
+                        fill="var(--color-sklearn)"
+                        radius={4}
+                      />
                     </BarChart>
                   </ChartContainer>
                 ) : null}
                 {chartDataForConfusion.length > 0 ? (
                   <ChartContainer
-                    className="h-72 w-full aspect-auto"
+                    className="aspect-auto h-72 w-full"
                     config={{
                       custom: { label: "Custom", color: "#3b82f6" },
                       sklearn: { label: "Sklearn", color: "#1d4ed8" },
                     }}
                   >
-                    <BarChart data={chartDataForConfusion} margin={{ left: 8, right: 8 }}>
+                    <BarChart
+                      data={chartDataForConfusion}
+                      margin={{ left: 8, right: 8 }}
+                    >
                       <CartesianGrid vertical={false} />
                       <XAxis
                         dataKey="metric"
@@ -316,15 +350,23 @@ export function App() {
                       />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <ChartLegend content={<ChartLegendContent />} />
-                      <Bar dataKey="custom" fill="var(--color-custom)" radius={4} />
-                      <Bar dataKey="sklearn" fill="var(--color-sklearn)" radius={4} />
+                      <Bar
+                        dataKey="custom"
+                        fill="var(--color-custom)"
+                        radius={4}
+                      />
+                      <Bar
+                        dataKey="sklearn"
+                        fill="var(--color-sklearn)"
+                        radius={4}
+                      />
                     </BarChart>
                   </ChartContainer>
                 ) : null}
               </>
             ) : (
               <ChartContainer
-                className="h-72 w-full aspect-auto"
+                className="aspect-auto h-72 w-full"
                 config={{
                   custom: { label: "Custom", color: "#3b82f6" },
                   sklearn: { label: "Sklearn", color: "#1d4ed8" },
@@ -353,7 +395,11 @@ export function App() {
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar dataKey="custom" fill="var(--color-custom)" radius={4} />
-                  <Bar dataKey="sklearn" fill="var(--color-sklearn)" radius={4} />
+                  <Bar
+                    dataKey="sklearn"
+                    fill="var(--color-sklearn)"
+                    radius={4}
+                  />
                 </BarChart>
               </ChartContainer>
             )}
