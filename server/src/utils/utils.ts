@@ -43,8 +43,8 @@ export function parseCommand(model: Models, dataset: Datasets) {
 
     case 'california_housing':
       if (model === 'k_means')
-        return `../build/k_means ../data/california_housing.csv 8 0 2 1`;
-      return `../build/${model} ../data/california_housing.csv 8 0 1`;
+        return `../build/k_means ../data/california_housing.csv 9 0 2 1`;
+      return `../build/${model} ../data/california_housing.csv 9 0 1`;
 
     case 'titanic_survived':
       if (model === 'k_means')
