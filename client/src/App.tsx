@@ -172,6 +172,14 @@ export function App() {
           </a>
           .
         </p>
+        <div
+          role="alert"
+          className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm text-yellow-800"
+        >
+          The server goes to sleep because of inactivity and takes a minute to
+          restart and another minute or so to run the custom model and
+          benchmark scripts. Please be patient
+        </div>
         <div className="mx-auto grid w-full max-w-xl gap-4 sm:grid-cols-2">
           <div className="space-y-2 text-left">
             <label
