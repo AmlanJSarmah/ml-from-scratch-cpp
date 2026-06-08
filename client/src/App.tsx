@@ -1,13 +1,4 @@
 import * as React from "react"
-
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox"
-import { Button } from "@/components/ui/button"
 import {
   ChartContainer,
   ChartLegend,
@@ -30,6 +21,107 @@ const DATASET_OPTIONS = [
   "Titanic survived",
   "Iris",
 ] as const
+
+// Lightweight in-file replacements for the shadcn Combobox and Button used
+// by this app. They intentionally keep behaviour identical for selection
+// and disabled states but avoid relying on external UI primitives which
+// weren't rendering correctly in the environment.
+
+function CustomButton({
+  children,
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode
+  onClick?: () => void
+  disabled?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:pointer-events-none bg-primary text-white`}
+    >
+      {children}
+    </button>
+  )
+}
+
+function CustomSelect({
+  id,
+  value,
+  disabled,
+  onChange,
+  placeholder,
+  className,
+  options,
+}: {
+  id?: string
+  value: string | null
+  disabled?: boolean
+  onChange: (value: string) => void
+  placeholder?: string
+  className?: string
+  options: string[]
+}) {
+  const [open, setOpen] = React.useState(false)
+  const ref = React.useRef<HTMLDivElement | null>(null)
+
+  React.useEffect(() => {
+    function onDocumentClick(e: MouseEvent) {
+      if (!ref.current) return
+      if (!ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener("mousedown", onDocumentClick)
+    return () => document.removeEventListener("mousedown", onDocumentClick)
+  }, [])
+
+  return (
+    <div className={`relative ${className ?? ""}`} ref={ref}>
+      <button
+        id={id}
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => !disabled && setOpen((v) => !v)}
+        disabled={disabled}
+        className={`w-full text-left rounded-md border px-3 py-2 shadow-sm focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:pointer-events-none bg-background`}
+      >
+        <span className={`${value ? "text-foreground" : "text-muted-foreground"}`}>
+          {value ?? placeholder ?? "Select..."}
+        </span>
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          aria-activedescendant={value ?? undefined}
+          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-sm shadow-lg"
+        >
+          {options.length === 0 ? (
+            <li className="px-2 py-1 text-muted-foreground">No options</li>
+          ) : (
+            options.map((option) => (
+              <li
+                key={option}
+                role="option"
+                aria-selected={option === value}
+                onClick={() => {
+                  onChange(option)
+                  setOpen(false)
+                }}
+                className={`cursor-pointer rounded px-2 py-1 hover:bg-accent/40 ${option === value ? "bg-accent/60 font-semibold" : ""}`}
+              >
+                {option}
+              </li>
+            ))
+          )}
+        </ul>
+      )}
+    </div>
+  )
+}
 
 export function App() {
   const [model, setModel] = React.useState<string | null>(null)
@@ -188,42 +280,30 @@ export function App() {
             >
               Model
             </label>
-            <Combobox
+            <CustomSelect
+              id="model-combobox"
               value={model}
               disabled={isRunning}
-              onValueChange={(value) => {
+              onChange={(value) => {
                 setModel(value)
                 setBenchmarkData(null)
                 setBenchmarkError(null)
               }}
-            >
-              <ComboboxInput
-                id="model-combobox"
-                placeholder="Select a model"
-                className="w-full"
-                disabled={isRunning}
-              />
-              <ComboboxContent>
-                <ComboboxList>
-                  {MODEL_OPTIONS.filter((option) => {
-                    if (isCaliforniaHousing) {
-                      return option === "Linear Regression"
-                    }
-                    if (isIrisSelected) {
-                      return (
-                        option !== "Logistic Regression" &&
-                        option !== "Naive Bayes"
-                      )
-                    }
-                    return true
-                  }).map((option) => (
-                    <ComboboxItem key={option} value={option}>
-                      {option}
-                    </ComboboxItem>
-                  ))}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+              placeholder="Select a model"
+              className="w-full"
+              options={MODEL_OPTIONS.filter((option) => {
+                if (isCaliforniaHousing) {
+                  return option === "Linear Regression"
+                }
+                if (isIrisSelected) {
+                  return (
+                    option !== "Logistic Regression" &&
+                    option !== "Naive Bayes"
+                  )
+                }
+                return true
+              })}
+            />
           </div>
           <div className="space-y-2 text-left">
             <label
@@ -232,48 +312,36 @@ export function App() {
             >
               Dataset
             </label>
-            <Combobox
+            <CustomSelect
+              id="dataset-combobox"
               value={dataset}
               disabled={isRunning}
-              onValueChange={(value) => {
+              onChange={(value) => {
                 setDataset(value)
                 setBenchmarkData(null)
                 setBenchmarkError(null)
               }}
-            >
-              <ComboboxInput
-                id="dataset-combobox"
-                placeholder="Select a dataset"
-                className="w-full"
-                disabled={isRunning}
-              />
-              <ComboboxContent>
-                <ComboboxList>
-                  {DATASET_OPTIONS.filter((option) => {
-                    if (option === "California Housing") {
-                      return isLinearRegression || model === null
-                    }
-                    if (option === "Iris") {
-                      return !isIrisIncompatibleModel
-                    }
-                    return true
-                  }).map((option) => (
-                    <ComboboxItem key={option} value={option}>
-                      {option}
-                    </ComboboxItem>
-                  ))}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+              placeholder="Select a dataset"
+              className="w-full"
+              options={DATASET_OPTIONS.filter((option) => {
+                if (option === "California Housing") {
+                  return isLinearRegression || model === null
+                }
+                if (option === "Iris") {
+                  return !isIrisIncompatibleModel
+                }
+                return true
+              })}
+            />
           </div>
         </div>
         <div className="flex justify-center">
-          <Button
+          <CustomButton
             onClick={handleRunBenchmark}
             disabled={!model || !dataset || isRunning}
           >
             {isRunning ? "Running..." : "Run benchmark"}
-          </Button>
+          </CustomButton>
         </div>
         {!benchmarkError && chartData.length > 0 ? (
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
